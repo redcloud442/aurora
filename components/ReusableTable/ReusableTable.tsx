@@ -37,7 +37,7 @@ const ReusableTable = <T extends object>({
 }: Props<T>) => {
   return (
     <>
-      <ScrollArea className="relative w-full overflow-x-auto border border-orange-500 rounded-md shadow-md">
+      <ScrollArea className="relative w-full overflow-x-auto border rounded-md shadow-md">
         {isFetchingList && <TableLoading />}
 
         <Table className="relative min-w-full table-auto border-separate border-spacing-0 bg-zinc-950 border-zinc-800 text-sm">
@@ -45,12 +45,12 @@ const ReusableTable = <T extends object>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="bg-orange-950 text-white dark:text-white"
+                className="bg-tertiary text-white dark:text-white"
               >
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="py-2 px-4 text-center font-bold tracking-wide uppercase border-b border-orange-600"
+                    className="py-2 px-4 text-center font-bold tracking-wide uppercase border-b border-zinc-700"
                   >
                     {header.isPlaceholder
                       ? null
@@ -69,7 +69,7 @@ const ReusableTable = <T extends object>({
               table.getExpandedRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="transition duration-200 hover:bg-orange-100/10 hover:shadow-inner dark:hover:bg-yellow-400/10"
+                  className="transition duration-200 hover:bg-zinc-100/10 hover:shadow-inner dark:hover:bg-zinc-400/10"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -101,7 +101,7 @@ const ReusableTable = <T extends object>({
             <TableRow>
               <TableCell className="px-0" colSpan={columns.length}>
                 <div className="flex justify-between items-center py-2 px-4 bg-zinc-900 border-t border-zinc-700">
-                  <span className="text-sm text-yellow-400 font-medium">
+                  <span className="text-sm text-tertiary font-medium">
                     Results {Math.min(activePage * 10, totalCount)} /{" "}
                     {totalCount}
                   </span>
@@ -112,7 +112,7 @@ const ReusableTable = <T extends object>({
         </Table>
 
         <ScrollBar
-          className="h-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded"
+          className="h-4 bg-gradient-to-r from-tertiary to-tertiary rounded"
           orientation="horizontal"
         />
       </ScrollArea>
@@ -123,7 +123,7 @@ const ReusableTable = <T extends object>({
             variant="ghost"
             size="sm"
             onClick={() => setActivePage((prev) => Math.max(prev - 1, 1))}
-            className="bg-orange-950 text-white hover:bg-orange-600 transition-all duration-200 rounded-lg shadow-md"
+            className="bg-zinc-950 text-white hover:bg-zinc-600 transition-all duration-200 rounded-lg shadow-md"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -167,8 +167,8 @@ const ReusableTable = <T extends object>({
                   size="sm"
                   className={`${
                     activePage === page
-                      ? "bg-orange-500 text-zinc-900 font-bold shadow-md"
-                      : "border border-zinc-700 text-zinc-300 hover:bg-orange-500 hover:text-white"
+                      ? "bg-tertiary text-zinc-900 font-bold shadow-md"
+                      : "border border-zinc-700 text-zinc-300 hover:bg-tertiary hover:text-white"
                   } rounded-lg px-3 py-2 transition-all duration-200`}
                 >
                   {page}
@@ -192,7 +192,7 @@ const ReusableTable = <T extends object>({
             onClick={() =>
               setActivePage((prev) => Math.min(prev + 1, pageCount))
             }
-            className="bg-orange-500 text-white hover:bg-orange-600 transition-all duration-200 rounded-lg shadow-md"
+            className="bg-tertiary text-white hover:bg-tertiary transition-all duration-200 rounded-lg shadow-md"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>

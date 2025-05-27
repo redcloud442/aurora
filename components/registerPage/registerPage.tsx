@@ -9,11 +9,11 @@ import { escapeFormData } from "@/utils/function";
 import { RegisterFormData, RegisterSchema } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, XSquareIcon } from "lucide-react";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { Resolver, useController, useForm } from "react-hook-form";
 import { BoundTurnstileObject } from "react-turnstile";
-import ReusableCard from "../ui/card-reusable";
 import {
   Form,
   FormControl,
@@ -182,7 +182,18 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
   };
 
   return (
-    <ReusableCard title="Register to XELORA!" className="p-0">
+    <div className="flex flex-col items-center justify-center gap-8 p-4 sm:p-8 max-w-lg mx-auto">
+      {/* Top Aurora Logo */}
+      <div className="w-full ">
+        <Image
+          src="/assets/icons/aurora.webp"
+          alt="Aurora Logo"
+          width={1000}
+          height={1000}
+          className="w-full h-auto"
+          priority
+        />
+      </div>
       <Form {...form}>
         <form
           className="space-y-4 w-full z-40"
@@ -214,12 +225,11 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>First Name</FormLabel>
                 <FormControl>
                   <Input
                     id="firstName"
                     variant="non-card"
-                    placeholder="First Name"
+                    placeholder="FIRST NAME:"
                     {...field}
                     className="pr-10"
                   />
@@ -234,12 +244,11 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last Name</FormLabel>
                 <FormControl>
                   <Input
                     id="lastName"
                     variant="non-card"
-                    placeholder="Last Name"
+                    placeholder="LAST NAME:"
                     {...field}
                     className="pr-10"
                   />
@@ -254,12 +263,11 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
             name="userName"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input
                     id="userName"
                     variant="non-card"
-                    placeholder="Username"
+                    placeholder="USERNAME:"
                     {...field}
                     onChange={(e) => {
                       userNameField.onChange(e.target.value);
@@ -284,99 +292,59 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
             )}
           />
 
+          <div className="flex gap-2">
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <PasswordInput
+                      id="password"
+                      variant="non-card"
+                      placeholder="PASSWORD:"
+                      {...field}
+                      className="pr-10"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <PasswordInput
+                      id="confirmPassword"
+                      variant="non-card"
+                      placeholder="CONFIRM PASSWORD:"
+                      {...field}
+                      className="pr-10"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={control}
-            name="email"
+            name="referralLink"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    id="email"
+                    id="referralLink"
                     variant="non-card"
-                    placeholder="(optional)"
+                    readOnly
+                    placeholder="REFERRAL CODE:"
                     {...field}
-                    className="pr-10"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone Number</FormLabel>
-                <FormControl>
-                  <Input
-                    id="phoneNumber"
-                    variant="non-card"
-                    placeholder="(optional)"
-                    {...field}
-                    className="pr-10"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    id="password"
-                    variant="non-card"
-                    placeholder="Password"
-                    {...field}
-                    className="pr-10"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    id="confirmPassword"
-                    variant="non-card"
-                    placeholder="Confirm Password"
-                    {...field}
-                    className="pr-10"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="sponsor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Sponsor</FormLabel>
-                <FormControl>
-                  <Input
-                    id="sponsor"
-                    variant="non-card"
-                    placeholder="Sponsor"
-                    {...field}
-                    className="pr-10"
+                    className="pr-10 text-center"
                   />
                 </FormControl>
                 <FormMessage />
@@ -394,19 +362,27 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
               />
             </div> */}
 
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center relative ">
             <Button
               variant="card"
-              className=" font-black text-2xl rounded-full p-5"
+              className=" font-black text-2xl rounded-md p-5"
               disabled={isSubmitting || isSuccess}
               type="submit"
             >
-              Register
+              REGISTER
             </Button>
+            <Image
+              src="/assets/icons/aurora.webp"
+              alt="Aurora Logo"
+              width={600}
+              height={300}
+              className="absolute -top-0 left-1/2 -translate-x-1/2 rotate-180 opacity-30 w-1/2 h-auto -z-10"
+              priority
+            />
           </div>
         </form>
       </Form>
-    </ReusableCard>
+    </div>
   );
 };
 

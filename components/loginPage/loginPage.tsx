@@ -8,17 +8,16 @@ import { escapeFormData } from "@/utils/function";
 import { LoginFormValues, LoginSchema } from "@/utils/schema";
 import { createClientSide } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BoundTurnstileObject } from "react-turnstile";
-import ReusableCard from "../ui/card-reusable";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
 import { PasswordInput } from "../ui/passwordInput";
@@ -78,12 +77,13 @@ const LoginPage = () => {
 
       toast({
         title: "Login Successfully",
+        variant: "success",
         description: "Redirecting to dashboard...",
       });
 
       setIsSuccess(true);
 
-      router.push("/dashboard");
+      router.push("/console");
     } catch (e) {
       if (e instanceof Error) {
         toast({
@@ -104,7 +104,18 @@ const LoginPage = () => {
   };
 
   return (
-    <ReusableCard title="Welcome to XELORA!">
+    <div className="flex flex-col items-center justify-center gap-8 p-4 sm:p-8 max-w-lg mx-auto">
+      {/* Top Aurora Logo */}
+      <div className="w-full ">
+        <Image
+          src="/assets/icons/aurora.webp"
+          alt="Aurora Logo"
+          width={1000}
+          height={1000}
+          className="w-full h-auto"
+          priority
+        />
+      </div>
       <Form {...form}>
         <form
           className="flex flex-col justify-center gap-6 w-full max-w-xs mx-auto z-50"
@@ -115,12 +126,11 @@ const LoginPage = () => {
             name="userName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input
                     variant="non-card"
                     id="username"
-                    placeholder="JuanDelaCruz"
+                    placeholder="Username"
                     {...field}
                   />
                 </FormControl>
@@ -134,7 +144,6 @@ const LoginPage = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
                 <FormControl>
                   <PasswordInput
                     variant="non-card"
@@ -158,19 +167,27 @@ const LoginPage = () => {
             />
           </div> */}
 
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center relative">
             <Button
               variant="card"
-              className=" font-black text-2xl rounded-full p-5"
+              className=" font-black rounded-md"
               disabled={isSubmitting || isSuccess}
               type="submit"
             >
-              {isSubmitting || isSuccess ? "Processing..." : "Login"}
+              {isSubmitting || isSuccess ? "LOGGING IN..." : "LOGIN"}
             </Button>
+            <Image
+              src="/assets/icons/aurora.webp"
+              alt="Aurora Logo"
+              width={600}
+              height={300}
+              className="absolute -top-0 left-1/2 -translate-x-1/2 rotate-180 opacity-30 w-1/2 h-auto -z-10"
+              priority
+            />
           </div>
         </form>
       </Form>
-    </ReusableCard>
+    </div>
   );
 };
 

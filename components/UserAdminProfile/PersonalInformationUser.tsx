@@ -32,9 +32,7 @@ const PersonalInformationLayout = ({
         });
 
         setUserSponsor({ user_username: userSponsor });
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     };
     fetchUserSponsor();
   }, [userProfile.user_id]);

@@ -4,19 +4,19 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Xelora",
-  description: "Step into Xelora — Your path to digital prosperity.",
+  title: "Aurora Simula",
+  description: "Ito na ang Simula!",
   openGraph: {
-    title: "Xelora",
-    description: "Step into Xelora — Your path to digital prosperity.",
-    url: "https://xelora.io",
-    siteName: "Xelora",
+    title: "Aurora Simula",
+    description: "Ito na ang Simula!",
+    url: "https://aurora.io",
+    siteName: "Aurora Simula",
     images: [
       {
-        url: "https://xelora.io/assets/icons/logo.ico",
+        url: "https://aurora.io/assets/icons/logo.ico",
         width: 1200,
         height: 630,
-        alt: "Xelora Banner",
+        alt: "Aurora Simula Banner",
       },
     ],
     type: "website",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 const roboto = Poppins({
   subsets: ["latin"],
   display: "swap",
-  weight: ["400"],
+  weight: ["400", "500", "700"],
 });
 
 export default function RootLayout({

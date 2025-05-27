@@ -73,7 +73,7 @@ export type ChartDataMember = {
   package_connection_id: string;
   package_date_created: string;
   profit_amount: number;
-  package_gif: string;
+  package_color: string;
   package_image: string;
   package_member_id: string;
   package_days: number;

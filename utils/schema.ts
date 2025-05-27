@@ -10,7 +10,7 @@ export const depositRequestSchema = z.object({
     .refine((amount) => parseInt(amount, 10) >= 500, {
       message: "Amount must be at least 500 pesos",
     }),
-  topUpMode: z.string().min(1, "Top up mode is required"),
+  topUpMode: z.string().min(1, "Select a bank"),
   accountName: z.string().trim().min(1, "Field is required"),
   accountNumber: z.string().trim().min(1, "Field is required"),
   file: z

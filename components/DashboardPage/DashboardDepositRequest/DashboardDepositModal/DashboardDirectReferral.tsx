@@ -1,24 +1,20 @@
 import AllyBountyTable from "@/components/AllyBountyPage/AllyBountyTable";
+import LegionBountyTable from "@/components/LegionBountyPage/LegionBountyTable";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollBar } from "@/components/ui/scroll-area";
-import { company_member_table } from "@prisma/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useState } from "react";
 
-type Props = {
-  teamMemberProfile: company_member_table;
-  count: number;
-};
-
-const DashboardDirectReferral = ({ count }: Props) => {
+const DashboardDirectReferral = () => {
   const [open, setOpen] = useState(false);
+  const [tabs, setTabs] = useState<"direct" | "indirect">("direct");
 
   return (
     <Dialog
@@ -28,26 +24,38 @@ const DashboardDirectReferral = ({ count }: Props) => {
       }}
     >
       <DialogTrigger asChild>
-        <Button
-          className="dark:bg-pageColor dark:text-white h-12"
-          onClick={() => setOpen(true)}
-        >
-          {count}
+        <Button className="rounded-xl px-5 sm:w-full sm:max-w-xs sm:h-12">
+          REFERRALS
         </Button>
       </DialogTrigger>
 
-      <DialogContent
-        type="table"
-        className="w-[400px] sm:w-[600px] dark:bg-cardColor border-none shadow-none overflow-auto"
-      >
-        <ScrollArea className="h-[500px] sm:h-full">
-          <DialogTitle className=" text-2xl font-bold">
-            Direct Referral
-          </DialogTitle>
-          <AllyBountyTable />
-          <DialogFooter className="flex justify-center"></DialogFooter>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+      <DialogContent type="table">
+        <DialogTitle className="text-2xl font-bold text-white">
+          {tabs === "direct" ? "Direct Referral" : "Indirect Referral"}
+        </DialogTitle>
+        <DialogDescription> </DialogDescription>
+        <Tabs
+          defaultValue="direct"
+          className="w-full"
+          onValueChange={(value) => setTabs(value as "direct" | "indirect")}
+        >
+          <TabsList variant={"underline"}>
+            <TabsTrigger variant={"underline"} value="direct">
+              Direct
+            </TabsTrigger>
+            <TabsTrigger variant={"underline"} value="indirect">
+              Indirect
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="direct">
+            <AllyBountyTable />
+          </TabsContent>
+          <TabsContent value="indirect">
+            <LegionBountyTable />
+          </TabsContent>
+        </Tabs>
+
+        <DialogFooter className="flex justify-center"></DialogFooter>
       </DialogContent>
     </Dialog>
   );

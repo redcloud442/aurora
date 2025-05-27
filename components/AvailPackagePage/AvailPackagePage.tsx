@@ -7,7 +7,7 @@ import { createPackageConnection } from "@/services/Package/Member";
 import { usePackageChartData } from "@/store/usePackageChartData";
 import { useUserEarningsStore } from "@/store/useUserEarningsStore";
 import { useRole } from "@/utils/context/roleContext";
-import { escapeFormData, formatNumberLocale } from "@/utils/function";
+import { escapeFormData } from "@/utils/function";
 import { PromoPackageSchema } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { package_table } from "@prisma/client";
@@ -18,28 +18,20 @@ import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
 import { Label } from "../ui/label";
 
 type Props = {
-  onClick: () => void;
   selectedPackage: package_table | null;
+  onClose: () => void;
 };
 
-const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
+const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
   const { teamMemberProfile, setTeamMemberProfile } = useRole();
   const { toast } = useToast();
   const { earnings, setEarnings } = useUserEarningsStore();
@@ -48,8 +40,6 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
   const [maxAmount, setMaxAmount] = useState(
     earnings?.company_combined_earnings
   );
-  const [open, setOpen] = useState(false);
-
   const formattedMaxAmount = new Intl.NumberFormat("en-PH", {
     style: "currency",
     currency: "PHP",
@@ -141,13 +131,13 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
           is_ready_to_claim: false,
           package_connection_id: uuidv4(),
           profit_amount: Number(computation),
-          package_gif: selectedPackage?.package_gif || "",
           package_date_created: new Date().toISOString(),
           package_member_id: teamMemberProfile?.company_member_id,
           package_days: Number(selectedPackage?.packages_days || 0),
           current_amount: Number(amount),
           currentPercentage: Number(0),
           package_percentage: Number(selectedPackage?.package_percentage || 0),
+          package_color: selectedPackage?.package_color || "",
           package_image: selectedPackage?.package_image || "",
         },
         ...chartData,
@@ -158,7 +148,7 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
         company_member_is_active: false,
       }));
 
-      setOpen(false);
+      onClose();
     } catch (e) {
       toast({
         title: "Error",
@@ -169,137 +159,112 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="absolute right-20 sm:right-32 bottom-10 sm:bottom-20 text-xl sm:text-4xl p-4 sm:p-6 w-min sm:max-w-xs"
-          variant="card"
-          onClick={onClick}
+    <>
+      <Image
+        src={selectedPackage?.package_image || ""}
+        alt={selectedPackage?.package_name || ""}
+        width={1000}
+        height={1000}
+        unoptimized
+      />
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6 w-full mx-auto flex justify-center items-center"
         >
-          AVAIL
-        </Button>
-      </DialogTrigger>
-      <DialogContent
-        className="bg-orange-950 dark:bg-orange-950"
-        type="earnings"
-      >
-        <DialogHeader>
-          <DialogTitle className="stroke-text-orange">
-            {selectedPackage?.package_name}
-          </DialogTitle>
-        </DialogHeader>
-        <Image
-          src={selectedPackage?.package_image || ""}
-          alt={selectedPackage?.package_name || ""}
-          width={1000}
-          height={1000}
-          unoptimized
-        />
-        <Form {...form}>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-6 w-full mx-auto flex justify-center items-center"
-          >
-            <div className="flex flex-col gap-4 w-full max-w-xs">
-              <Label className="font-bold text-center" htmlFor="walletBalance">
-                WALLET BALANCE:
-              </Label>
-              <Input
-                variant="non-card"
-                id="walletBalance"
-                readOnly
-                type="text"
-                className="text-center"
-                placeholder="0"
-                value={earnings?.company_combined_earnings || ""}
-              />
+          <div className="flex flex-col gap-4 w-full max-w-xs">
+            <Label className="font-bold text-center" htmlFor="walletBalance">
+              BALANCE:
+            </Label>
+            <Input
+              variant="non-card"
+              id="walletBalance"
+              readOnly
+              type="text"
+              className="text-center"
+              placeholder="0"
+              value={earnings?.company_combined_earnings || ""}
+            />
 
-              <FormField
-                control={control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold text-center">
-                      AMOUNT TO AVAIL:
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="amount"
-                        type="text"
-                        variant="non-card"
-                        className="text-center"
-                        placeholder="Enter amount"
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(e) => {
-                          let value = e.target.value;
+            <FormField
+              control={control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      id="amount"
+                      type="text"
+                      variant="non-card"
+                      className="text-center"
+                      placeholder="Enter amount"
+                      {...field}
+                      value={field.value || ""}
+                      onChange={(e) => {
+                        let value = e.target.value;
 
-                          if (value === "") {
-                            field.onChange("");
-                            return;
-                          }
+                        if (value === "") {
+                          field.onChange("");
+                          return;
+                        }
 
-                          // Allow only numbers and a single decimal point
-                          value = value.replace(/[^0-9]/g, "");
+                        // Allow only numbers and a single decimal point
+                        value = value.replace(/[^0-9]/g, "");
 
-                          // Prevent multiple decimal points
-                          const parts = value.split(".");
-                          if (parts.length > 2) {
-                            value = parts[0] + "." + parts[1]; // Keep only the first decimal part
-                          }
+                        // Prevent multiple decimal points
+                        const parts = value.split(".");
+                        if (parts.length > 2) {
+                          value = parts[0] + "." + parts[1]; // Keep only the first decimal part
+                        }
 
-                          // Ensure it doesn't start with multiple zeros (e.g., "00")
-                          if (
-                            value.startsWith("0") &&
-                            !value.startsWith("0.")
-                          ) {
-                            value = value.replace(/^0+/, "0");
-                          }
+                        // Ensure it doesn't start with multiple zeros (e.g., "00")
+                        if (value.startsWith("0") && !value.startsWith("0.")) {
+                          value = value.replace(/^0+/, "0");
+                        }
 
-                          // Limit decimal places to 2 (adjust as needed)
-                          if (value.includes(".")) {
-                            const [integerPart, decimalPart] = value.split(".");
-                            value = `${integerPart}.${decimalPart.slice(0, 2)}`;
-                          }
+                        // Limit decimal places to 2 (adjust as needed)
+                        if (value.includes(".")) {
+                          const [integerPart, decimalPart] = value.split(".");
+                          value = `${integerPart}.${decimalPart.slice(0, 2)}`;
+                        }
 
-                          field.onChange(value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        field.onChange(value);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* 
+            <Label className="font-bold text-center" htmlFor="totalIncome">
+              TOTAL INCOME AFTER {selectedPackage?.packages_days} DAYS
+            </Label>
+            <Input
+              variant="non-card"
+              id="totalIncome"
+              readOnly
+              type="text"
+              className="text-center"
+              placeholder="Total Income"
+              value={formatNumberLocale(sumOfTotal) || ""}
+            /> */}
 
-              <Label className="font-bold text-center" htmlFor="totalIncome">
-                TOTAL INCOME AFTER {selectedPackage?.packages_days} DAYS
-              </Label>
-              <Input
-                variant="non-card"
-                id="totalIncome"
-                readOnly
-                type="text"
-                className="text-center"
-                placeholder="Total Income"
-                value={formatNumberLocale(sumOfTotal) || ""}
-              />
-
-              <div className="flex items-center justify-center">
-                <Button
-                  variant="card"
-                  className=" font-black text-2xl rounded-full p-5"
-                  disabled={isSubmitting}
-                  type="submit"
-                >
-                  {isSubmitting && <Loader2 className="animate-spin mr-2" />}
-                  Submit
-                </Button>
-              </div>
+            <div className="flex items-center justify-center">
+              <Button
+                variant="card"
+                className=" font-black text-2xl rounded-none p-5"
+                disabled={isSubmitting}
+                type="submit"
+              >
+                {isSubmitting && <Loader2 className="animate-spin mr-2" />}
+                Submit
+              </Button>
             </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 };
 

@@ -64,7 +64,7 @@ export const createTriggerUser = async (params: {
     phoneNumber,
   };
 
-  const response = await fetch(`/api/v1/access/register`, {
+  const response = await fetch(`/api/v1/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export const loginValidation = async (
 
   const formattedUserName = userName + "@gmail.com";
 
-  const response = await fetch(`/api/v1/access`, {
+  const response = await fetch(`/api/v1/auth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -175,7 +175,7 @@ export const handleSignInAdmin = async (params: {
   userName: string;
   password: string;
 }) => {
-  const response = await fetch(`/api/v1/access/xeloraAccess`, {
+  const response = await fetch(`/api/v1/auth/auroraAuth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

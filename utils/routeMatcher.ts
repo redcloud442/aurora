@@ -1,28 +1,16 @@
 import { CompanyMemberRole } from "./enums";
 
 export const PUBLIC_ROUTES = [
-  "/access/login",
-  "/access/register",
-  "/api/v1/access",
-  "/api/v1/access/xeloraAccess",
+  "/auth/login",
+  "/auth/register",
+  "/api/v1/auth",
+  "/api/v1/auth/auroraAuth",
   "/api/health",
-  "/api/v1/access/callback",
-  "/access/xeloraAccess",
+  "/api/v1/auth/callback",
+  "/auth/auroraAuth",
 ];
 
-export const PRIVATE_ROUTES = [
-  "/dashboard",
-  "/api/v1/access",
-  "/inbox",
-  "/history",
-  "/profile",
-  "/contact",
-  "/withdraw",
-  "/deposit",
-  "/trading",
-  "/matrix",
-  "/referral",
-];
+export const PRIVATE_ROUTES = ["/console"];
 
 export const ADMIN_ROUTES = ["/admin"];
 

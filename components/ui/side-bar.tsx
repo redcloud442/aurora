@@ -32,8 +32,8 @@ import { useRole } from "@/utils/context/roleContext";
 const data = {
   teams: [
     {
-      name: "XELORA",
-      logo: "/assets/icons/logo.ico",
+      name: "AURORA",
+      logo: "/assets/icons/AURORA.webp",
       plan: "Company",
     },
   ],
@@ -126,10 +126,14 @@ const data = {
           url: "/admin/packages",
           icon: Package,
         },
-
         {
           title: "Export",
           url: "/admin/export",
+          icon: File,
+        },
+        {
+          title: "Banner",
+          url: "/admin/banner",
           icon: File,
         },
       ],

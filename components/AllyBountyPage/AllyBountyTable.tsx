@@ -14,9 +14,9 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import ReusableTable from "../ReusableTable/ReusableTable";
+import CardTable from "../CardListTable/CardListTable";
 import { AllyBountyColumn } from "./AllyBountyColum";
 
 type FilterFormValues = {
@@ -38,18 +38,25 @@ const AllyBountyTable = () => {
   const isAscendingSort =
     sorting?.[0]?.desc === undefined ? true : !sorting[0].desc;
 
+  const cacheAllyBounty = useRef<{
+    [key: string]: {
+      data: (user_table & {
+        total_bounty_earnings: string;
+        package_ally_bounty_log_date_created: Date;
+        company_referral_date: Date;
+      })[];
+      count: number;
+    };
+  }>({});
+
   const fetchAdminRequest = async () => {
     try {
       if (!teamMemberProfile) return;
 
-      const now = Date.now();
-      const SIXTY_SECONDS = 60 * 1000;
+      const cacheKey = `ally-bounty-${activePage}`;
 
-      // Skip if data was fetched less than 60 seconds ago
-      if (
-        directReferral.lastFetchedAt &&
-        now - directReferral.lastFetchedAt < SIXTY_SECONDS
-      ) {
+      if (cacheAllyBounty.current[cacheKey]) {
+        setDirectReferral(cacheAllyBounty.current[cacheKey]);
         return;
       }
 
@@ -75,6 +82,15 @@ const AllyBountyTable = () => {
         })[],
         count: totalCount || 0,
       });
+
+      cacheAllyBounty.current[cacheKey] = {
+        data: data as unknown as (user_table & {
+          total_bounty_earnings: string;
+          package_ally_bounty_log_date_created: Date;
+          company_referral_date: Date;
+        })[],
+        count: totalCount || 0,
+      };
     } catch (e) {
     } finally {
       setIsFetchingList(false);
@@ -114,9 +130,8 @@ const AllyBountyTable = () => {
   const pageCount = Math.ceil(directReferral.count / 10);
 
   return (
-    <ReusableTable
+    <CardTable
       table={table}
-      columns={columns}
       activePage={activePage}
       totalCount={directReferral.count}
       isFetchingList={isFetchingList}

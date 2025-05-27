@@ -170,11 +170,10 @@ export const formateMonthDateYearv2 = (date: Date | string): string => {
     "December",
   ];
 
-  const year = inputDate.getFullYear();
   const month = monthNames[inputDate.getMonth()]; // Get full month name
   const day = inputDate.getDate(); // No padding for human-friendly format
 
-  return `${month} ${day}, ${year}`;
+  return `${month} ${day}`;
 };
 
 export const formatTime = (date: Date | string): string => {

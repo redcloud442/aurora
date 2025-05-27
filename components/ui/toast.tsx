@@ -16,7 +16,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-0 md:top-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:top-0 sm:right-0 sm:bottom-auto sm:flex-col md:max-w-[420px]",
+      "fixed bottom-0 md:bottom-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:top-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]",
       className
     )}
     {...props}
@@ -30,13 +30,16 @@ const toastVariants = cva(
     variants: {
       variant: {
         default:
-          "gamified group border border-orange-500 shadow-md shadow-orange-400 bg-gradient-to-br from-[#1F1F1F] to-[#2B2B2B] text-orange-400 hover:shadow-lg hover:shadow-orange-500 dark:border-orange-600 dark:bg-[#2A2A2A] dark:text-orange-300",
+          "border border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 hover:dark:bg-gray-700",
+
         destructive:
-          "destructive group border-red-500 dark:bg-orange-600 bg-orange-600 text-neutral-50 dark:border-red-900 dark:bg-orange-600 dark:text-neutral-50",
+          "border border-red-500 bg-red-600 text-white hover:bg-red-700 dark:border-red-700 dark:bg-red-800 dark:text-white hover:dark:bg-red-700",
+
         success:
-          "gamified group border border-orange-500 shadow-md shadow-orange-400 bg-gradient-to-br from-[#1F1F1F] to-[#2B2B2B] text-orange-400 hover:shadow-lg hover:shadow-orange-500 dark:border-orange-600 dark:bg-[#2A2A2A] dark:text-orange-300",
+          "border border-green-500 bg-green-600 text-white hover:bg-green-700 dark:border-green-700 dark:bg-green-800 dark:text-white hover:dark:bg-green-700",
+
         reject:
-          "reject group border-none shadow-2xs shadow-white bg-[#1E1E1E] text-primaryYellow dark:border-yellow-900 dark:bg-yellow-700 dark:text-neutral-50",
+          "border border-yellow-500 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:border-yellow-700 dark:bg-yellow-700 dark:text-white hover:dark:bg-yellow-600",
       },
     },
     defaultVariants: {

@@ -3,7 +3,6 @@ import { package_table } from "@prisma/client";
 import { RefreshCcw } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import ReusableCardBg from "../DashboardPage/DashboardCardBg/DashboardCardBg";
-import DashboardReinvestPromoPackage from "../DashboardPage/DashboardReinvestPromoPackage/DashboardReinvestPromoPackage";
 import { Button } from "./button";
 import LoaderBounce from "./loader-bounce";
 
@@ -51,8 +50,6 @@ const CardBalance = ({ value, handleClick, refresh, packages }: Props) => {
           )}
         </div>
       </div>
-
-      <DashboardReinvestPromoPackage className="w-full" packages={packages} />
     </ReusableCardBg>
   );
 };

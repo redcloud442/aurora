@@ -25,6 +25,9 @@
   --radius-sm: calc(var(--radius) - 4px);
 
   --color-primary: #332644;
+  --color-button-primary: #d9d9d9;
+  --color-secondary: #15072b;
+  --color-tertiary: #662eb5;
 }
 
 /*

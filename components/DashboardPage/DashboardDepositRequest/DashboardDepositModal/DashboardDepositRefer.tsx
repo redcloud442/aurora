@@ -20,7 +20,6 @@ import {
 } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
-import DashboardDynamicGuideModal from "../DashboardDynamicGuideModal/DashboardDynamicGuideModal";
 import DashboardDirectReferral from "./DashboardDirectReferral";
 import DashboardIndirectReferral from "./DashboardIndirectReferral";
 
@@ -121,7 +120,7 @@ const DashboardDepositModalRefer = ({
                     Copy
                   </Button>
                 </div>
-                <DashboardDynamicGuideModal type="refer" />
+
                 <Image
                   src="/assets/referral-bonus.png"
                   alt="Refer a Friend"
@@ -210,10 +209,7 @@ const DashboardDepositModalRefer = ({
                     >
                       Direct Referral
                     </Label>
-                    <DashboardDirectReferral
-                      teamMemberProfile={teamMemberProfile}
-                      count={totalEarnings?.directReferralCount || 0}
-                    />
+                    <DashboardDirectReferral />
                   </div>
 
                   <div className="flex flex-col gap-2 items-center justify-center w-24">

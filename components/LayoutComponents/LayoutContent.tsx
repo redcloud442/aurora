@@ -1,6 +1,5 @@
 "use client";
 
-import MobileNavBar from "@/components/ui/MobileNavBar";
 import {
   SidebarInset,
   SidebarProvider,
@@ -16,6 +15,7 @@ import { useUserHaveAlreadyWithdraw } from "@/store/useWithdrawalToday";
 import { ROLE } from "@/utils/constant";
 import { useRole } from "@/utils/context/roleContext";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useMemo } from "react";
@@ -27,11 +27,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
-import DevMode from "../ui/dev-mode";
 import { Separator } from "../ui/separator";
 import { AppSidebar } from "../ui/side-bar";
 import { ModeToggle } from "../ui/toggleDarkmode";
-import TopNavigation from "../ui/top-navigation";
 
 type LayoutContentProps = {
   children: React.ReactNode;
@@ -81,7 +79,6 @@ export default function LayoutContent({ children }: LayoutContentProps) {
         package: canWithdrawPackage,
       });
     } catch (e) {
-      console.error("Failed to fetch transaction data", e);
     } finally {
       setLoading(false);
     }
@@ -96,16 +93,6 @@ export default function LayoutContent({ children }: LayoutContentProps) {
   const sidebar = useMemo(() => {
     if (!isAdmin) return null;
     return <AppSidebar />;
-  }, [isAdmin]);
-
-  const mobileNav = useMemo(() => {
-    if (isAdmin) return null;
-    return <MobileNavBar />;
-  }, [isAdmin]);
-
-  const topNav = useMemo(() => {
-    if (isAdmin) return null;
-    return <TopNavigation />;
   }, [isAdmin]);
 
   const breadcrumbs = useMemo(() => {
@@ -124,12 +111,21 @@ export default function LayoutContent({ children }: LayoutContentProps) {
   if (!isAdmin) {
     return (
       <div className="min-h-screen h-full w-full overflow-hidden relative">
-        <div className="relative">
-          {topNav}
-          {children}
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/assets/bg/BACKGROUND.webp"
+            alt="Aurora Background"
+            width={1980}
+            height={1080}
+            className="absolute top-0 left-0 w-full h-full object-cover z-0"
+            priority
+          />
+
+          <div className="absolute inset-0 bg-black opacity-40" />
         </div>
+        <div className="relative">{children}</div>
         {/* {mobileNav} */}
-        <DevMode />
+        {/* <DevMode /> */}
       </div>
     );
   } else {
@@ -177,7 +173,7 @@ export default function LayoutContent({ children }: LayoutContentProps) {
               </Breadcrumb>
             </div>
           </header>
-          <div className="pb-24 p-4 relative z-50 grow">{children}</div>
+          <div className="pb-24 p-4 relative z-50 grow ">{children}</div>
           <ModeToggle />
         </SidebarInset>
       </SidebarProvider>

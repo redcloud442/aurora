@@ -1,193 +1,166 @@
 "use client";
 
-import { toast } from "@/hooks/use-toast";
-import { logError } from "@/services/Error/ErrorLogs";
-import { getUserWithdrawalToday } from "@/services/User/User";
+import { useToast } from "@/hooks/use-toast";
 import { usePackageChartData } from "@/store/usePackageChartData";
 import { useUserDashboardEarningsStore } from "@/store/useUserDashboardEarnings";
-import { useUserEarningsStore } from "@/store/useUserEarningsStore";
-import { useUserHaveAlreadyWithdraw } from "@/store/useWithdrawalToday";
 import { useRole } from "@/utils/context/roleContext";
-import { createClientSide } from "@/utils/supabase/client";
-import { package_table } from "@prisma/client";
+import { formatNumberLocale } from "@/utils/function";
+import { company_promo_table, package_table } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import DashboardPromobanner from "./DashboardComponents/DashboardPromobanner";
+import DashboardDepositModalDeposit from "./DashboardDepositRequest/DashboardDepositModal/DashboardDepositModalDeposit";
+import DashboardDepositModalPackages from "./DashboardDepositRequest/DashboardDepositModal/DashboardDepositPackagesModal";
+import DashboardDirectReferral from "./DashboardDepositRequest/DashboardDepositModal/DashboardDirectReferral";
+import TransactionHistory from "./DashboardDepositRequest/DashboardDepositModal/DashboardTransactionHistory";
+import DashboardWithdrawalModal from "./DashboardDepositRequest/DashboardDepositModal/DashboardWithdrawalModal";
+import DashboardNavigation from "./DashboardNavigation";
+import DashboardPackages from "./DashboardPackages";
 
 type Props = {
   packages: package_table[];
+  banners: company_promo_table[];
 };
 
-const DashboardPage = ({ packages }: Props) => {
-  const supabaseClient = createClientSide();
+const DashboardPage = ({ packages, banners }: Props) => {
   const { referral } = useRole();
-  const { earnings, setEarnings } = useUserEarningsStore();
-  const { setTotalEarnings } = useUserDashboardEarningsStore();
+  const { totalEarnings } = useUserDashboardEarningsStore();
   const { chartData } = usePackageChartData();
-  const { teamMemberProfile, profile } = useRole();
-  const {
-    isWithdrawalToday,
-    canUserDeposit,
-    setCanUserDeposit,
-    setIsWithdrawalToday,
-  } = useUserHaveAlreadyWithdraw();
-  const [isActive, setIsActive] = useState(
-    teamMemberProfile.company_member_is_active
-  );
+  const { toast } = useToast();
 
-  const [refresh, setRefresh] = useState(false);
-
-  const handleRefresh = async () => {
-    try {
-      setRefresh(true);
-      const { totalEarnings, userEarningsData, actions } =
-        await getUserWithdrawalToday();
-
-      if (!totalEarnings || !userEarningsData) return;
-
-      setTotalEarnings({
-        directReferralAmount: totalEarnings.directReferralAmount ?? 0,
-        indirectReferralAmount: totalEarnings.indirectReferralAmount ?? 0,
-        totalEarnings: totalEarnings.totalEarnings ?? 0,
-        withdrawalAmount: totalEarnings.withdrawalAmount ?? 0,
-        directReferralCount: totalEarnings.directReferralCount ?? 0,
-        indirectReferralCount: totalEarnings.indirectReferralCount ?? 0,
-        packageEarnings: totalEarnings.packageEarnings ?? 0,
-      });
-
-      setEarnings(userEarningsData);
-
-      setCanUserDeposit(actions.canUserDeposit);
-      setIsWithdrawalToday({
-        referral: actions.canWithdrawReferral,
-        package: actions.canWithdrawPackage,
-      });
-    } catch (e) {
-      if (e instanceof Error) {
-        await logError(supabaseClient, {
-          errorMessage: e.message,
-        });
-      }
-    } finally {
-      setRefresh(false);
-    }
-  };
-
-  const handleReferralLink = (referralLink: string) => {
-    navigator.clipboard.writeText(referralLink);
+  const handleCopyReferralLink = () => {
+    navigator.clipboard.writeText(`${referral.company_referral_link}`);
 
     toast({
-      title: "Referral link copied to clipboard",
-      description: "You can now share it with your friends",
-      variant: "success",
+      title: "Referral Link Copied",
+      description: "Referral link copied to clipboard",
     });
   };
 
   return (
-    <div className="relative min-h-screen h-full flex items-start justify-start md:justify-center ">
-      <div className="w-full max-w-6xl flex justify-between h-[100vh] sm:min-h-screen sm:h-full">
-        {/* Left Column */}
-        <div className="flex flex-col justify-center md:justify-around gap-y-22 p-2">
-          <Link
-            href="/deposit"
-            className="translate-x-[30px] md:translate-x-[140px]"
-          >
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-sm px-4 sm:px-6 sm:text-2xl"
-            >
-              DEPOSIT
-            </Button>
-          </Link>
-          <Link href="/referrals">
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-sm px-4 sm:px-6 sm:text-2xl"
-            >
-              REFERRALS
-            </Button>
-          </Link>
-          <Link
-            href="/settings"
-            className="translate-x-[30px] md:translate-x-[140px]"
-          >
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-sm px-4 sm:px-6 sm:text-2xl"
-            >
-              SETTINGS
-            </Button>
-          </Link>
-        </div>
-
-        <div className="absolute inset-0 -z-10">
+    <>
+      <DashboardNavigation />
+      <div className="w-full">
+        <div className="flex flex-col items-center justify-between h-[85vh] p-4 relative">
+          {/* Aurora Background */}
           <Image
-            src="/assets/bg/BACKGROUND.webp"
+            src="/assets/icons/AURORA.webp"
             alt="Aurora Background"
             width={1980}
             height={1080}
-            className="absolute top-0 left-0 w-full h-full object-cover z-0"
+            className="absolute top-10 left-0 w-full h-full object-none z-40 animate-pulse"
             priority
-            placeholder="blur"
-            blurDataURL="/assets/bg/BACKGROUND-small.webp"
           />
 
-          <div className="absolute inset-0 bg-black opacity-40" />
+          <div className="w-full flex justify-between relative z-50">
+            <div className="space-y-4 flex flex-col items-start sm:items-stretch sm:w-full">
+              <Button
+                onClick={handleCopyReferralLink}
+                className="rounded-xl px-5 sm:w-full w-auto sm:max-w-sm sm:h-12"
+              >
+                REFERRAL LINK
+              </Button>
+              <DashboardDirectReferral />
+            </div>
+
+            <div className="space-y-4 flex flex-col justify-end items-end w-full">
+              <DashboardDepositModalDeposit />
+              <DashboardDepositModalPackages packages={packages} />
+            </div>
+          </div>
+
+          <div className="space-y-4 z-50 w-full">
+            <div className="w-full flex justify-between sm:justify-baseline space-x-4 relative">
+              <DashboardWithdrawalModal />
+
+              <Button className="rounded-xl w-auto sm:w-full sm:h-12">
+                COMMUNITY
+              </Button>
+            </div>
+            <TransactionHistory />
+          </div>
         </div>
 
-        <Image
-          src="/assets/icons/AURORA.webp"
-          alt="Aurora Background"
-          width={1980}
-          height={1080}
-          className="absolute top-0 left-0 w-full h-full object-contain md:object-none z-50 border-2 border-red-500"
-          priority
-        />
+        <div className="min-h-auto sm:min-h-min w-full relative">
+          <Image
+            src="/assets/bg/SECONDARYBG.webp"
+            alt="Aurora Background"
+            width={1980}
+            height={1080}
+            className="absolute left-0 w-full h-full object-cover z-40"
+            priority
+          />
 
-        <div className="flex flex-col justify-center md:justify-around gap-y-22">
-          <Link
-            href="/withdraw"
-            className="translate-x-[-10px] md:translate-x-[-140px]"
-          >
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-sm px-4 sm:px-6 sm:text-2xl"
-            >
-              WITHDRAW
-            </Button>
-          </Link>
-          <Link
-            href="/packages"
-            className="translate-x-[60px] md:translate-x-[0px]"
-          >
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-sm px-4 sm:px-6 sm:text-2xl"
-            >
-              PACKAGE
-            </Button>
-          </Link>
-          <Link
-            href="/transactions"
-            className="translate-x-[-30px] md:translate-x-[-140px]"
-          >
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-sm px-4 sm:px-6 sm:text-2xl"
-            >
-              TRANSACTIONS
-            </Button>
-          </Link>
+          <div className="grid grid-cols-2 gap-4 relative z-50 p-2 h-full">
+            <DashboardPromobanner promoBanner={banners} />
+
+            <div className="flex flex-col sm:justify-evenly h-full">
+              <div className="flex flex-col items-start justify-center">
+                <h1 className="text-md sm:text-xl font-bold">TOTAL PROFIT:</h1>
+                <Input
+                  type="text"
+                  className="border-blue-800 border-2"
+                  value={formatNumberLocale(totalEarnings?.totalEarnings ?? 0)}
+                  readOnly
+                />
+              </div>
+
+              <div className="flex flex-col items-start justify-center">
+                <h1 className="text-md sm:text-xl font-bold">
+                  TOTAL WITHDRAWAL:
+                </h1>
+                <Input
+                  type="text"
+                  className="border-green-500 border-2"
+                  value={formatNumberLocale(
+                    totalEarnings?.withdrawalAmount ?? 0
+                  )}
+                  readOnly
+                />
+              </div>
+
+              <div className="flex flex-col items-start justify-center">
+                <h1 className="text-md sm:text-xl font-bold">
+                  TOTAL REFERRAL:
+                </h1>
+                <Input
+                  type="text"
+                  className="border-sky-300 border-2"
+                  value={
+                    formatNumberLocale(
+                      totalEarnings?.directReferralCount ?? 0
+                    ) +
+                    formatNumberLocale(
+                      totalEarnings?.indirectReferralCount ?? 0
+                    )
+                  }
+                  readOnly
+                />
+              </div>
+
+              <div className="flex flex-col items-start justify-center">
+                <h1 className="text-md sm:text-xl font-bold">TOTAL PACKAGE:</h1>
+                <Input
+                  type="text"
+                  className="border-primary border-2 sm:w-full"
+                  value={formatNumberLocale(
+                    totalEarnings?.packageEarnings ?? 0
+                  )}
+                  readOnly
+                />
+              </div>
+            </div>
+          </div>
         </div>
+        {chartData.length > 0 && (
+          <div className="p-4">
+            <h1 className="text-md sm:text-xl font-bold">List Of Packages</h1>
+            <DashboardPackages />
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 

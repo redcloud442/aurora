@@ -65,13 +65,13 @@ export async function updateSession(request: NextRequest) {
 
     case RouteAction.REDIRECT_LOGIN: {
       const loginUrl = request.nextUrl.clone();
-      loginUrl.pathname = "/access/login";
+      loginUrl.pathname = "/auth/login";
       return addSecurityHeaders(NextResponse.redirect(loginUrl));
     }
 
-    case RouteAction.REDIRECT_DASHBOARD: {
+    case RouteAction.REDIRECT_CONSOLE: {
       const homeUrl = request.nextUrl.clone();
-      homeUrl.pathname = "/dashboard";
+      homeUrl.pathname = "/console";
       return addSecurityHeaders(NextResponse.redirect(homeUrl));
     }
 
@@ -112,13 +112,13 @@ const determineRouteAction = ({
   }
 
   // 🟡 REDIRECT ADMIN USERS FROM /dashboard TO /admin
-  if (pathname === "/dashboard" && role === CompanyMemberRole.ADMIN) {
+  if (pathname === "/console" && role === CompanyMemberRole.ADMIN) {
     return RouteAction.REDIRECT_ADMIN;
   }
 
   // Non-admin users visiting public route (e.g. `/`)
   if (isPublicRoute(pathname)) {
-    if (pathname !== "/dashboard") return RouteAction.REDIRECT_DASHBOARD;
+    if (pathname !== "/console") return RouteAction.REDIRECT_CONSOLE;
   }
 
   if (isPrivateRoute(pathname)) {

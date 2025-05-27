@@ -4,6 +4,7 @@ import { getLegionBounty } from "@/services/Bounty/Member";
 import { useIndirectReferralStore } from "@/store/useIndirrectReferralStore";
 import { useRole } from "@/utils/context/roleContext";
 import { escapeFormData } from "@/utils/function";
+import { LegionRequestData } from "@/utils/types";
 import {
   ColumnFiltersState,
   getCoreRowModel,
@@ -13,9 +14,9 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import ReusableTable from "../ReusableTable/ReusableTable";
+import CardTable from "../CardListTable/CardListTable";
 import { LegionBountyColumn } from "./LegionBountyColumn";
 
 type FilterFormValues = {
@@ -38,20 +39,24 @@ const LegionBountyTable = () => {
   const isAscendingSort =
     sorting?.[0]?.desc === undefined ? true : !sorting[0].desc;
 
+  const cacheLegionBounty = useRef<{
+    [key: string]: {
+      data: LegionRequestData[];
+      count: number;
+    };
+  }>({});
+
   const fetchAdminRequest = async () => {
     try {
       if (!teamMemberProfile) return;
 
-      const now = Date.now();
-      const SIXTY_SECONDS = 60 * 1000;
+      const cacheKey = `legion-bounty-${activePage}`;
 
-      // Skip if data was fetched less than 60 seconds ago
-      if (
-        indirectReferral.lastFetchedAt &&
-        now - indirectReferral.lastFetchedAt < SIXTY_SECONDS
-      ) {
+      if (cacheLegionBounty.current[cacheKey]) {
+        setIndirectReferral(cacheLegionBounty.current[cacheKey]);
         return;
       }
+
       setIsFetchingList(true);
 
       const sanitizedData = escapeFormData(getValues());
@@ -71,6 +76,11 @@ const LegionBountyTable = () => {
         data: data || [],
         count: totalCount || 0,
       });
+
+      cacheLegionBounty.current[cacheKey] = {
+        data: data || [],
+        count: totalCount || 0,
+      };
     } catch (e) {
     } finally {
       setIsFetchingList(false);
@@ -110,9 +120,8 @@ const LegionBountyTable = () => {
   const pageCount = Math.ceil(indirectReferral.count / 10);
 
   return (
-    <ReusableTable
+    <CardTable
       table={table}
-      columns={columns}
       activePage={activePage}
       totalCount={indirectReferral.count}
       isFetchingList={isFetchingList}

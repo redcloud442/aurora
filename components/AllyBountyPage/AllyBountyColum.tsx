@@ -1,4 +1,4 @@
-import { formatDateToYYYYMMDD, formatTime } from "@/utils/function";
+import { formateMonthDateYearv2, formatNumberLocale } from "@/utils/function";
 import { user_table } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -17,11 +17,10 @@ export const AllyBountyColumn = (): ColumnDef<
         <div className="text-start text-xs font-bold p-0">Date</div>
       ),
       cell: ({ row }) => (
-        <div className="text-start text-[10px] sm:text-[12px]">
-          {formatDateToYYYYMMDD(
+        <div className="text-start text-sm sm:text-md">
+          {formateMonthDateYearv2(
             row.original.package_ally_bounty_log_date_created
           )}
-          , {formatTime(row.original.package_ally_bounty_log_date_created)}
         </div>
       ),
     },
@@ -32,7 +31,7 @@ export const AllyBountyColumn = (): ColumnDef<
         <div className="text-start text-xs font-bold p-0">Username</div>
       ),
       cell: ({ row }) => (
-        <div className="text-start text-[10px] sm:text-[12px]">
+        <div className="text-start text-sm sm:text-md">
           {row.getValue("user_username")}
         </div>
       ),
@@ -43,26 +42,8 @@ export const AllyBountyColumn = (): ColumnDef<
         <div className="text-start text-xs font-bold p-0">Amount</div>
       ),
       cell: ({ row }) => (
-        <div className="text-start text-[10px] sm:text-[12px]">
-          ₱{" "}
-          {Number(row.getValue("total_bounty_earnings")).toLocaleString(
-            "en-US",
-            {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }
-          )}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "company_referral_date",
-      header: () => (
-        <div className="text-start font-bold text-xs p-0">Invite Date</div>
-      ),
-      cell: ({ row }) => (
-        <div className="text-start text-[10px] sm:text-[12px]">
-          {formatDateToYYYYMMDD(row.original.company_referral_date)}
+        <div className="text-start text-sm sm:text-md">
+          ₱ {formatNumberLocale(row.getValue("total_bounty_earnings"))}
         </div>
       ),
     },
