@@ -39,11 +39,27 @@ export const TransactionHistoryColumn = ({
             header: () => (
               <div className="text-start text-lg font-bold">Details</div>
             ),
-            cell: ({ row }: { row: Row<company_transaction_table> }) => (
-              <div className="text-start">
-                {row.getValue("company_transaction_details")}
-              </div>
-            ),
+            cell: ({ row }: { row: Row<company_transaction_table> }) => {
+              const value = row.getValue("company_transaction_details") as
+                | string
+                | null;
+
+              if (!value) {
+                return (
+                  <div className="text-sm text-white italic">No details</div>
+                );
+              }
+
+              return (
+                <div className="text-sm text-white font-medium leading-snug break-words text-start">
+                  {value.includes(",")
+                    ? value
+                        .split(",")
+                        .map((part, idx) => <div key={idx}>{part.trim()}</div>)
+                    : value}
+                </div>
+              );
+            },
           },
         ]
       : []),

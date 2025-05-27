@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-button-primary/30 font-bold text-md text-white font-normal shadow-sm cursor-pointer rounded-sm ",
-        card: "bg-primary text-white font-extrabold text-lg px-10 py-2 rounded-full shadow-md hover:brightness-110 transition duration-300",
+        card: "bg-button-primary text-black font-extrabold text-lg px-10 py-2 rounded-full shadow-md hover:brightness-110 transition duration-300",
         destructive:
           "bg-red-500 text-neutral-50 shadow-xs hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90",
         outline:

@@ -77,47 +77,47 @@ const CircularProgressWrapper = ({
           <div>START: {formateMonthDateYear(data.package_date_created)}</div>
           <div>MATURITY: {formateMonthDateYear(data.completion_date)}</div>
         </div>
-      </div>
-
-      {data.is_ready_to_claim && (
-        <Dialog
-          open={openDialogId === data.package_connection_id}
-          onOpenChange={(isOpen) =>
-            setOpenDialogId(isOpen ? data.package_connection_id : null)
-          }
-        >
-          <DialogTrigger asChild>
-            <Button
-              variant="ghost"
-              className="absolute bottom-[-40px] bg-cyan-400 text-black font-bold text-sm px-5 py-2 rounded-full"
-            >
-              CLAIM
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="bg-[#1e1933] text-white border-cyan-400">
-            <DialogHeader>
-              <DialogTitle className="text-lg mb-2">Collect</DialogTitle>
-              <p>Collect this package to gain your earnings</p>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                disabled={isLoading === data.package_connection_id}
-                onClick={() => handleClaimPackage(data)}
-                className="w-full bg-cyan-400 text-black font-bold"
-              >
-                {isLoading === data.package_connection_id ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    Collecting...
-                  </>
-                ) : (
-                  "Collect"
-                )}
+        {data.is_ready_to_claim && (
+          <Dialog
+            open={openDialogId === data.package_connection_id}
+            onOpenChange={(isOpen) =>
+              setOpenDialogId(isOpen ? data.package_connection_id : null)
+            }
+          >
+            <DialogTrigger asChild>
+              <Button variant="default" className="z-50">
+                CLAIM
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+            </DialogTrigger>
+            <DialogContent className="bg-[#1e1933] text-white border-cyan-400">
+              <DialogHeader>
+                <DialogTitle className="text-lg mb-2 text-white">
+                  Claim {data.package}
+                </DialogTitle>
+                <p className="text-white">
+                  Generate Earnings by claiming this package
+                </p>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  disabled={isLoading === data.package_connection_id}
+                  onClick={() => handleClaimPackage(data)}
+                  className="w-full bg-cyan-400 text-black font-bold"
+                >
+                  {isLoading === data.package_connection_id ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Collecting...
+                    </>
+                  ) : (
+                    "Collect"
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
 
       <div className="absolute bottom-0 text-white text-base">
         {data.currentPercentage.toFixed(2)}%

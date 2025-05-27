@@ -121,7 +121,7 @@ const DashboardDepositModalDeposit = () => {
       });
 
       reset();
-
+      setIsOpen(false);
       setCanUserDeposit(true);
     } catch (e) {
       if (e instanceof Error) {
