@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PackageCard from "@/components/ui/packageCard";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { package_table } from "@prisma/client";
 import { useState } from "react";
 
@@ -53,23 +54,25 @@ const DashboardDepositModalPackages = ({ packages }: Props) => {
           <DialogTitle>BUY PACKAGE</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="grid sm:grid-cols-1 gap-4">
-          {!selectedPackage &&
-            packages.map((pkg) => (
-              <PackageCard
-                key={pkg.package_id}
-                packages={pkg}
-                onClick={() => handlePackageSelect(pkg)}
-              />
-            ))}
+        <ScrollArea className="h-[80vh] sm:h-auto">
+          <div className="grid sm:grid-cols-1 gap-4">
+            {!selectedPackage &&
+              packages.map((pkg) => (
+                <PackageCard
+                  key={pkg.package_id}
+                  packages={pkg}
+                  onClick={() => handlePackageSelect(pkg)}
+                />
+              ))}
 
-          {selectedPackage && (
-            <AvailPackagePage
-              selectedPackage={selectedPackage}
-              onClose={handleClose}
-            />
-          )}
-        </div>
+            {selectedPackage && (
+              <AvailPackagePage
+                selectedPackage={selectedPackage}
+                onClose={handleClose}
+              />
+            )}
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

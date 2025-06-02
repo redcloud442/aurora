@@ -160,10 +160,10 @@ const DashboardDepositProfile = () => {
         <DialogDescription />
 
         <div className="relative flex flex-col gap-4">
-          <div className="flex justify-between gap-4">
+          <div className="flex justify-between items-center gap-4">
             <Avatar
               onClick={() => inputRef.current?.click()}
-              className="w-40 h-auto rounded-none mb-4"
+              className="w-40 h-40 rounded-none mb-4"
             >
               <AvatarImage
                 src={profile.user_profile_picture || ""}
@@ -171,7 +171,7 @@ const DashboardDepositProfile = () => {
               />
               <AvatarFallback
                 onClick={() => setOpen(true)}
-                className="text-white w-40 h-auto rounded-xl mb-4 cursor-pointer"
+                className="text-white w-40 h-40 rounded-xl mb-4 cursor-pointer"
               >
                 <UserIcon className="w-4 h-4" />
               </AvatarFallback>

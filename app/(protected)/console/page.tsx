@@ -1,9 +1,9 @@
 // app/dashboard/page.tsx
 
 import DashboardPage from "@/components/DashboardPage/DashboardPage";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
+import Loading from "../loading";
 
 const handleFetchPackages = async () => {
   const res = await fetch(`${process.env.API_URL}/api/v1/package`, {
@@ -43,7 +43,7 @@ const Page = async () => {
     handleFetchBanners(),
   ]);
   return (
-    <Suspense fallback={<Skeleton className="h-full w-full p-4" />}>
+    <Suspense fallback={<Loading />}>
       <DashboardPage packages={packages} banners={banners} />
     </Suspense>
   );

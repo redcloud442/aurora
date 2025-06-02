@@ -11,10 +11,9 @@ const PackageCard = ({ onClick, packages }: Props) => {
     <div className="relative">
       <Image
         src={packages.package_image || ""}
-        unoptimized
         alt={packages.package_name}
-        width={1200}
-        height={1000}
+        width={800}
+        height={800}
         priority
         onClick={onClick}
         className={`rounded-md cursor-pointer transition-transform hover:scale-105`}

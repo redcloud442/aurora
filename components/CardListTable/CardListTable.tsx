@@ -25,10 +25,9 @@ const CardTable = <T extends object>({
 
   return (
     <>
-      <ScrollArea className="space-y-6 h-[400px] sm:h-[750px]">
-        {isFetchingList && <TableLoading />}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+      <ScrollArea className="space-y-6 h-[400px] sm:h-[750px] relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 relative">
+          {isFetchingList && <TableLoading />}
           {rows.length ? (
             rows.map((row) => (
               <div

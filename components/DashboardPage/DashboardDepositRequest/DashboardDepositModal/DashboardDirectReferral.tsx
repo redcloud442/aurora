@@ -29,7 +29,7 @@ const DashboardDirectReferral = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent type="table">
+      <DialogContent type="table" className="h-[80vh]">
         <DialogTitle className="text-2xl font-bold text-white">
           {tabs === "direct" ? "Direct Referral" : "Indirect Referral"}
         </DialogTitle>

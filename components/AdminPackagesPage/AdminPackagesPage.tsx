@@ -37,7 +37,7 @@ const AdminPackageList = () => {
     fetchPackages();
   }, [teamMemberProfile, supabase]);
 
-  return (
+    return (
     <div className="container mx-auto p- md:p-10 space-y-6 ">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-foreground">

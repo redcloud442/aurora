@@ -23,7 +23,7 @@ const TransactionHistory = () => {
         <Button className="w-full sm:h-12">Transaction History</Button>
       </DialogTrigger>
 
-      <DialogContent type="table">
+      <DialogContent type="table" className="h-[80vh]">
         <DialogTitle className="text-2xl font-bold text-white">
           Transaction History
         </DialogTitle>

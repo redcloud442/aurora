@@ -2,7 +2,6 @@
 import LayoutContent from "@/components/LayoutComponents/LayoutContent";
 import { ThemeProvider } from "@/components/theme-provider/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
 import { RoleProvider } from "@/utils/context/roleContext";
 import { protectionMemberUser } from "@/utils/serversideProtection";
 import {
@@ -12,6 +11,7 @@ import {
 } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import Loading from "./loading";
 
 export default async function AppLayout({
   children,
@@ -43,9 +43,7 @@ export default async function AppLayout({
           }
           initialReferral={referral as company_referral_link_table}
         >
-          <Suspense
-            fallback={<Skeleton className="h-[calc(100vh-10rem)] w-full" />}
-          >
+          <Suspense fallback={<Loading />}>
             <LayoutContent>{children}</LayoutContent>
           </Suspense>
         </RoleProvider>

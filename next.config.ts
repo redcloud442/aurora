@@ -6,7 +6,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "edvkurqqnysiofdpgbxk.supabase.co",
+        hostname: "cdn.auroraphil.com",
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
@@ -16,7 +16,7 @@ const nextConfig = {
     return [
       {
         source: "/api/v1/:path*",
-        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:8000" : "http://localhost:8000"}/api/v1/:path*`,
+        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://deliver-api.auroraphil.com"}/api/v1/:path*`,
       },
     ];
   },

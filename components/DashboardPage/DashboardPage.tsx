@@ -38,11 +38,15 @@ const DashboardPage = ({ packages, banners }: Props) => {
     });
   };
 
+  const totalReferral =
+    (totalEarnings?.directReferralCount ?? 0) +
+    (totalEarnings?.indirectReferralCount ?? 0);
+
   return (
     <>
       <DashboardNavigation />
       <div className="w-full">
-        <div className="flex flex-col items-center justify-between h-[85vh] p-4 relative">
+        <div className="flex flex-col items-center justify-between min-h-screen p-4 relative">
           {/* Aurora Background */}
           <Image
             src="/assets/icons/AURORA.webp"
@@ -71,7 +75,7 @@ const DashboardPage = ({ packages, banners }: Props) => {
           </div>
 
           <div className="space-y-4 z-50 w-full">
-            <div className="w-full flex justify-between sm:justify-baseline space-x-4 relative">
+            <div className="w-full flex justify-between sm:justify-baseline space-x-2 sm:space-x-4 relative">
               <DashboardWithdrawalModal />
 
               <Button className="rounded-xl w-auto sm:w-full sm:h-12">
@@ -92,16 +96,18 @@ const DashboardPage = ({ packages, banners }: Props) => {
             priority
           />
 
-          <div className="grid grid-cols-2 gap-4 relative z-50 p-2 h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-50 p-2 h-full">
             <DashboardPromobanner promoBanner={banners} />
 
-            <div className="flex flex-col sm:justify-evenly h-full">
+            <div className="flex flex-col sm:justify-evenly h-full gap-4">
               <div className="flex flex-col items-start justify-center">
                 <h1 className="text-md sm:text-xl font-bold">TOTAL PROFIT:</h1>
                 <Input
                   type="text"
-                  className="border-blue-800 border-2"
-                  value={formatNumberLocale(totalEarnings?.totalEarnings ?? 0)}
+                  className="border-blue-800 border-2 h-14"
+                  value={`₱ ${formatNumberLocale(
+                    totalEarnings?.totalEarnings ?? 0
+                  )}`}
                   readOnly
                 />
               </div>
@@ -112,10 +118,10 @@ const DashboardPage = ({ packages, banners }: Props) => {
                 </h1>
                 <Input
                   type="text"
-                  className="border-green-500 border-2"
-                  value={formatNumberLocale(
+                  className="border-green-500 border-2 h-14"
+                  value={`₱ ${formatNumberLocale(
                     totalEarnings?.withdrawalAmount ?? 0
-                  )}
+                  )}`}
                   readOnly
                 />
               </div>
@@ -126,15 +132,8 @@ const DashboardPage = ({ packages, banners }: Props) => {
                 </h1>
                 <Input
                   type="text"
-                  className="border-sky-300 border-2"
-                  value={
-                    formatNumberLocale(
-                      totalEarnings?.directReferralCount ?? 0
-                    ) +
-                    formatNumberLocale(
-                      totalEarnings?.indirectReferralCount ?? 0
-                    )
-                  }
+                  className="border-sky-300 border-2 h-14"
+                  value={`₱ ${formatNumberLocale(totalReferral)}`}
                   readOnly
                 />
               </div>
@@ -143,10 +142,10 @@ const DashboardPage = ({ packages, banners }: Props) => {
                 <h1 className="text-md sm:text-xl font-bold">TOTAL PACKAGE:</h1>
                 <Input
                   type="text"
-                  className="border-primary border-2 sm:w-full"
-                  value={formatNumberLocale(
+                  className="border-primary border-2 h-14"
+                  value={`₱ ${formatNumberLocale(
                     totalEarnings?.packageEarnings ?? 0
-                  )}
+                  )}`}
                   readOnly
                 />
               </div>

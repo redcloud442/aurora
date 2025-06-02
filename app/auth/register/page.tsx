@@ -41,11 +41,11 @@ export async function generateMetadata({
 const Page = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ referralCode: string }>;
+  searchParams: Promise<{ AURORAREFER: string }>;
 }) => {
-  const { referralCode } = await searchParams;
+  const { AURORAREFER } = await searchParams;
 
-  if (!referralCode) {
+  if (!AURORAREFER) {
     redirect("/auth/login");
   }
 
@@ -55,7 +55,7 @@ const Page = async ({
         some: {
           company_referral_link_table: {
             some: {
-              company_referral_code: referralCode,
+              company_referral_code: AURORAREFER,
             },
           },
           AND: [
@@ -77,7 +77,7 @@ const Page = async ({
 
   return (
     <RegisterPage
-      referralLink={referralCode}
+      referralLink={AURORAREFER}
       userName={user?.user_username || ""}
     />
   );

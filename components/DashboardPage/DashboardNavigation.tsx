@@ -12,7 +12,7 @@ const DashboardNavigation = () => {
         <div className="flex justify-between items-center px-4 py-2 gap-2">
           <div className="flex items-center gap-2">
             <DashboardDepositProfile />
-            <div className="flex flex-col items-start justify-end leading-none">
+            <div className="flex flex-col sm:flex-row gap-1 items-start justify-end leading-none">
               <span className="text-white text-xs font-bold">
                 {profile?.user_first_name}
               </span>

@@ -253,7 +253,7 @@ const DashboardDepositModalDeposit = () => {
                 control={control}
                 name="accountNumber"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex-1">
                     <FormControl>
                       <Input
                         readOnly
