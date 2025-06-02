@@ -108,7 +108,7 @@ const DashboardDepositModalDeposit = () => {
         throw new Error("File upload failed.");
       }
 
-      const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`;
+      const publicUrl = `https://cdn.auroraphil.com/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`;
 
       await handleDepositRequest({
         TopUpFormValues: sanitizedData,
