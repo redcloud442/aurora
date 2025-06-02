@@ -183,7 +183,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
       {/* Top Aurora Logo */}
       <div className="w-full ">
         <Image
-          src="/assets/icons/aurora.webp"
+          src="/assets/icons/AURORA.webp"
           alt="Aurora Logo"
           width={1000}
           height={1000}
@@ -369,7 +369,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
               REGISTER
             </Button>
             <Image
-              src="/assets/icons/aurora.webp"
+              src="/assets/icons/AURORA.webp"
               alt="Aurora Logo"
               width={600}
               height={300}

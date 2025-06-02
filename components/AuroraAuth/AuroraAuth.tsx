@@ -184,7 +184,7 @@ const AuroraAuth = () => {
       {/* Top Aurora Logo */}
       <div className="w-full ">
         <Image
-          src="/assets/icons/aurora.webp"
+          src="/assets/icons/AURORA.webp"
           alt="Aurora Logo"
           width={1000}
           height={1000}
