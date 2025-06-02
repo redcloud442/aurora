@@ -2,7 +2,6 @@
 
 import { getAllyBounty } from "@/services/Bounty/Member";
 import { useRole } from "@/utils/context/roleContext";
-import { user_table } from "@prisma/client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   ColumnFiltersState,
@@ -28,58 +27,68 @@ const AllyBountyTable = ({ modalOpen }: AllyBountyTableProps) => {
   const [rowSelection, setRowSelection] = useState({});
 
   const { teamMemberProfile } = useRole();
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
   const columnAccessor = sorting?.[0]?.id || "user_date_created";
   const isAscendingSort =
     sorting?.[0]?.desc === undefined ? true : !sorting[0].desc;
 
-  const { data, fetchNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ["ally-bounty", teamMemberProfile?.company_member_id],
-      queryFn: async ({ pageParam = 1 }) => {
-        const { data, totalCount } = await getAllyBounty({
-          page: pageParam,
-          limit: 10,
-          columnAccessor,
-          isAscendingSort,
-          search: "",
-        });
+  const {
+    data,
+    fetchNextPage,
+    fetchPreviousPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: ["ally-bounty", teamMemberProfile?.company_member_id],
+    queryFn: async ({ pageParam = 1 }) => {
+      const { data, totalCount } = await getAllyBounty({
+        page: pageParam,
+        limit: 10,
+        columnAccessor,
+        isAscendingSort,
+        search: "",
+      });
 
-        return {
-          page: pageParam,
-          data: data as unknown as (user_table & {
-            total_bounty_earnings: string;
-            package_ally_bounty_log_date_created: Date;
-            company_referral_date: Date;
-          })[],
-          totalCount,
-        };
-      },
-      getNextPageParam: (lastPage) => {
-        const hasMore = lastPage.data.length >= 10;
-        return hasMore ? lastPage.page + 1 : undefined;
-      },
-      enabled: !!teamMemberProfile || modalOpen,
-      staleTime: 1000 * 60 * 5, // Cache is fresh for 5 mins
-      gcTime: 1000 * 60 * 10, // Cache is stale for 10 mins
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      initialPageParam: 1,
-    });
+      return {
+        page: pageParam,
+        data: data || [],
+        totalCount: totalCount || 0,
+        nextCursor: data.length === 10 ? pageParam + 1 : undefined,
+        prevCursor: pageParam > 1 ? pageParam - 1 : undefined,
+      };
+    },
+    getNextPageParam: (lastPage) => {
+      const hasMore = lastPage.data.length >= 10;
+      return hasMore ? lastPage.page + 1 : undefined;
+    },
+    getPreviousPageParam: (firstPage) => {
+      const hasMore = firstPage.data.length >= 10;
+      return hasMore ? firstPage.page - 1 : undefined;
+    },
+    enabled: !!teamMemberProfile || modalOpen,
+    staleTime: 1000 * 60 * 5, // Cache is fresh for 5 mins
+    gcTime: 1000 * 60 * 10, // Cache is stale for 10 mins
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    initialPageParam: 1,
+  });
 
-  // Flatten data for the table
-  const flattenedData = useMemo(() => {
-    const allData = data?.pages.flatMap((page) => page.data) ?? [];
+  // Flatten and set to store
+  const currentData = useMemo(() => {
+    return data?.pages?.[currentPageIndex]?.data ?? [];
+  }, [data, currentPageIndex]);
 
-    return allData;
-  }, [data]);
+  const totalCount = data?.pages?.[0]?.totalCount ?? 0;
 
   const columns = AllyBountyColumn();
 
   const table = useReactTable({
-    data: flattenedData,
-    columns,
+    data: currentData,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -95,22 +104,63 @@ const AllyBountyTable = ({ modalOpen }: AllyBountyTableProps) => {
     },
   });
 
-  const handleNextPage = () => {
-    fetchNextPage();
+  const handleNextPage = async () => {
+    const nextPage = currentPageIndex + 1;
+    if (data?.pages.length && data.pages.length > nextPage) {
+      setCurrentPageIndex(nextPage); // already fetched
+    } else {
+      const result = await fetchNextPage();
+      if (!result.error) {
+        setCurrentPageIndex(nextPage);
+      }
+    }
+  };
+
+  const handlePreviousPage = async () => {
+    const prevPage = currentPageIndex - 1;
+    if (prevPage >= 0) {
+      if (data?.pages[prevPage]) {
+        setCurrentPageIndex(prevPage); // already fetched
+      } else {
+        const result = await fetchPreviousPage();
+        if (!result.error && data?.pages[prevPage]) {
+          setCurrentPageIndex(prevPage);
+        }
+      }
+    }
+  };
+
+  const handlePageChange = async (page: number) => {
+    const index = page - 1;
+
+    if (data?.pages[index]) {
+      setCurrentPageIndex(index);
+    } else {
+      const targetFetchCount = index + 1;
+
+      for (let i = data?.pages.length ?? 0; i < targetFetchCount; i++) {
+        const result = await fetchNextPage();
+        if (result.error) break;
+      }
+
+      setCurrentPageIndex(index);
+    }
   };
 
   return (
     <CardTable
       table={table}
-      totalCount={data?.pages?.[0]?.totalCount ?? 0}
+      totalCount={totalCount}
       isFetchingList={isLoading || isFetchingNextPage}
-      setActivePage={handleNextPage}
+      handleNextPage={handleNextPage}
+      handlePreviousPage={handlePreviousPage}
+      handlePageChange={handlePageChange}
       pageCount={
         data?.pages?.[0]?.totalCount
           ? Math.ceil(data.pages[0].totalCount / 10)
           : 0
       }
-      activePage={0}
+      activePage={currentPageIndex + 1}
     />
   );
 };

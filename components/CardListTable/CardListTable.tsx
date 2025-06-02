@@ -1,6 +1,5 @@
 import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import TableLoading from "../ui/tableLoading";
@@ -9,8 +8,10 @@ type Props<T> = {
   activePage: number;
   totalCount: number;
   isFetchingList: boolean;
-  setActivePage: Dispatch<SetStateAction<number>>;
   pageCount: number;
+  handlePreviousPage: () => void;
+  handleNextPage: () => void;
+  handlePageChange: (page: number) => void;
 };
 
 const CardTable = <T extends object>({
@@ -18,8 +19,10 @@ const CardTable = <T extends object>({
   activePage,
   totalCount,
   isFetchingList,
-  setActivePage,
   pageCount,
+  handlePreviousPage,
+  handleNextPage,
+  handlePageChange,
 }: Props<T>) => {
   const rows = table.getRowModel().rows;
 
@@ -75,7 +78,7 @@ const CardTable = <T extends object>({
             variant="ghost"
             size="sm"
             disabled={activePage <= 1}
-            onClick={() => setActivePage((prev) => Math.max(prev - 1, 1))}
+            onClick={handlePreviousPage}
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -85,7 +88,7 @@ const CardTable = <T extends object>({
               key={page}
               size="sm"
               variant={page === activePage ? "default" : "ghost"}
-              onClick={() => setActivePage(page)}
+              onClick={() => handlePageChange(page)}
               className={`rounded-md px-3 py-1 text-sm transition-all ${
                 page === activePage
                   ? "bg-tertiary text-black font-bold"
@@ -100,9 +103,7 @@ const CardTable = <T extends object>({
             variant="ghost"
             size="sm"
             disabled={activePage >= pageCount}
-            onClick={() =>
-              setActivePage((prev) => Math.min(prev + 1, pageCount))
-            }
+            onClick={handleNextPage}
           >
             <ChevronRight className="w-4 h-4" />
           </Button>

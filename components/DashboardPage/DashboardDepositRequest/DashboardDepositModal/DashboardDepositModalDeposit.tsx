@@ -133,7 +133,7 @@ const DashboardDepositModalDeposit = () => {
       });
       reset();
       setIsOpen(false);
-      setCanUserDeposit(true);
+      setCanUserDeposit(false);
     } catch (e) {
       if (e instanceof Error) {
         await logError(supabaseClient, {
