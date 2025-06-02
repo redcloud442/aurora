@@ -19,7 +19,7 @@ const LegionBountyPage = () => {
 
         {/* Table Section */}
         <section className="rounded-lg ">
-          <LegionBountyTable />
+          <LegionBountyTable modalOpen={false} />
         </section>
       </div>
     </div>

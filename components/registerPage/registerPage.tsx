@@ -156,7 +156,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
         title: "Registration Successful",
       });
 
-      router.push("/dashboard");
+      router.push("/console");
     } catch (e) {
       if (captcha.current) {
         captcha.current.reset();

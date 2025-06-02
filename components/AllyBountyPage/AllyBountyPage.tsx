@@ -18,7 +18,7 @@ const AllyBountyPage = () => {
 
         <Separator className="my-4" />
         <section className=" rounded-lg ">
-          <AllyBountyTable />
+          <AllyBountyTable modalOpen={false} />
         </section>
       </div>
     </div>

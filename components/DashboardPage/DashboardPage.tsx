@@ -8,7 +8,6 @@ import { formatNumberLocale } from "@/utils/function";
 import { company_promo_table, package_table } from "@prisma/client";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import DashboardPromobanner from "./DashboardComponents/DashboardPromobanner";
 import DashboardDepositModalDeposit from "./DashboardDepositRequest/DashboardDepositModal/DashboardDepositModalDeposit";
 import DashboardDepositModalPackages from "./DashboardDepositRequest/DashboardDepositModal/DashboardDepositPackagesModal";
@@ -26,10 +25,18 @@ type Props = {
 const DashboardPage = ({ packages, banners }: Props) => {
   const { referral } = useRole();
   const { totalEarnings } = useUserDashboardEarningsStore();
+  const { teamMemberProfile } = useRole();
   const { chartData } = usePackageChartData();
   const { toast } = useToast();
 
   const handleCopyReferralLink = () => {
+    if (!teamMemberProfile.company_member_is_active) {
+      toast({
+        title: "You need to buy a package to get a referral link",
+        variant: "destructive",
+      });
+      return;
+    }
     navigator.clipboard.writeText(`${referral.company_referral_link}`);
 
     toast({
@@ -96,58 +103,71 @@ const DashboardPage = ({ packages, banners }: Props) => {
             priority
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-50 p-2 h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-50 p-4 h-full">
             <DashboardPromobanner promoBanner={banners} />
-
-            <div className="flex flex-col sm:justify-evenly h-full gap-4">
+            <div className="flex flex-col sm:justify-evenly h-full gap-6">
+              {/* Total Profit */}
               <div className="flex flex-col items-start justify-center">
-                <h1 className="text-md sm:text-xl font-bold">TOTAL PROFIT:</h1>
-                <Input
-                  type="text"
-                  className="border-blue-800 border-2 h-14"
-                  value={`₱ ${formatNumberLocale(
-                    totalEarnings?.totalEarnings ?? 0
-                  )}`}
-                  readOnly
-                />
+                <h1 className="text-lg sm:text-xl font-bold text-cyan-300 mb-2 tracking-wide">
+                  TOTAL PROFIT:
+                </h1>
+                <div className="w-full relative">
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900/80 border-2 border-cyan-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-cyan-400/30 focus:outline-none focus:shadow-cyan-400/50 transition-all duration-300"
+                    value={`₱ ${formatNumberLocale(totalEarnings?.totalEarnings ?? 0)}`}
+                    readOnly
+                  />
+                  <div className="absolute inset-0 rounded-full border-2 border-cyan-400 animate-pulse opacity-50"></div>
+                </div>
               </div>
 
+              {/* Total Withdrawal */}
               <div className="flex flex-col items-start justify-center">
-                <h1 className="text-md sm:text-xl font-bold">
+                <h1 className="text-lg sm:text-xl font-bold text-green-300 mb-2 tracking-wide">
                   TOTAL WITHDRAWAL:
                 </h1>
-                <Input
-                  type="text"
-                  className="border-green-500 border-2 h-14"
-                  value={`₱ ${formatNumberLocale(
-                    totalEarnings?.withdrawalAmount ?? 0
-                  )}`}
-                  readOnly
-                />
+                <div className="w-full relative">
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900/80 border-2 border-green-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-green-400/30 focus:outline-none focus:shadow-green-400/50 transition-all duration-300"
+                    value={`₱ ${formatNumberLocale(totalEarnings?.withdrawalAmount ?? 0)}`}
+                    readOnly
+                  />
+                  <div className="absolute inset-0 rounded-full border-2 border-green-400 animate-pulse opacity-50"></div>
+                </div>
               </div>
 
+              {/* Total Referral */}
               <div className="flex flex-col items-start justify-center">
-                <h1 className="text-md sm:text-xl font-bold">
+                <h1 className="text-lg sm:text-xl font-bold text-cyan-300 mb-2 tracking-wide">
                   TOTAL REFERRAL:
                 </h1>
-                <Input
-                  type="text"
-                  className="border-sky-300 border-2 h-14"
-                  value={`₱ ${formatNumberLocale(totalReferral)}`}
-                  readOnly
-                />
+                <div className="w-full relative">
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900/80 border-2 border-cyan-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-cyan-400/30 focus:outline-none focus:shadow-cyan-400/50 transition-all duration-300"
+                    value={`₱ ${formatNumberLocale(totalReferral)}`}
+                    readOnly
+                  />
+                  <div className="absolute inset-0 rounded-full border-2 border-cyan-400 animate-pulse opacity-50"></div>
+                </div>
               </div>
 
+              {/* Total Package */}
               <div className="flex flex-col items-start justify-center">
-                <h1 className="text-md sm:text-xl font-bold">TOTAL PACKAGE:</h1>
-                <Input
-                  type="text"
-                  className="border-primary border-2 h-14"
-                  value={`₱ ${formatNumberLocale(
-                    totalEarnings?.packageEarnings ?? 0
-                  )}`}
-                  readOnly
-                />
+                <h1 className="text-lg sm:text-xl font-bold text-purple-300 mb-2 tracking-wide">
+                  TOTAL PACKAGE:
+                </h1>
+                <div className="w-full relative">
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900/80 border-2 border-purple-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-purple-400/30 focus:outline-none focus:shadow-purple-400/50 transition-all duration-300"
+                    value={`₱ ${formatNumberLocale(totalEarnings?.packageEarnings ?? 0)}`}
+                    readOnly
+                  />
+                  <div className="absolute inset-0 rounded-full border-2 border-purple-400 animate-pulse opacity-50"></div>
+                </div>
               </div>
             </div>
           </div>

@@ -28,7 +28,7 @@ const TransactionHistory = () => {
           Transaction History
         </DialogTitle>
         <DialogDescription></DialogDescription>
-        <TransactionHistoryTable />
+        <TransactionHistoryTable modalOpen={open} />
         <DialogFooter className="flex justify-center"></DialogFooter>
       </DialogContent>
     </Dialog>

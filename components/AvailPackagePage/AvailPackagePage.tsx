@@ -11,6 +11,7 @@ import { escapeFormData } from "@/utils/function";
 import { PromoPackageSchema } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { package_table } from "@prisma/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -25,7 +26,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Label } from "../ui/label";
-
 type Props = {
   selectedPackage: package_table | null;
   onClose: () => void;
@@ -36,6 +36,7 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
   const { toast } = useToast();
   const { earnings, setEarnings } = useUserEarningsStore();
   const { chartData, setChartData } = usePackageChartData();
+  const queryClient = useQueryClient();
 
   const [maxAmount, setMaxAmount] = useState(
     earnings?.company_combined_earnings
@@ -68,7 +69,6 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
   const computation = amount
     ? (Number(amount) * (selectedPackage?.package_percentage ?? 0)) / 100
     : 0;
-  const sumOfTotal = Number(amount) + computation;
 
   const onSubmit = async (data: z.infer<typeof packageSchema>) => {
     try {
@@ -147,6 +147,14 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
         ...prev,
         company_member_is_active: false,
       }));
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "transaction-history",
+          "EARNINGS",
+          teamMemberProfile?.company_member_id,
+        ],
+      });
 
       onClose();
     } catch (e) {

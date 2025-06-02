@@ -31,11 +31,13 @@ import { logError } from "@/services/Error/ErrorLogs";
 import { getMerchantOptions } from "@/services/Options/Options";
 import { handleDepositRequest } from "@/services/TopUp/Member";
 import { useUserHaveAlreadyWithdraw } from "@/store/useWithdrawalToday";
+import { useRole } from "@/utils/context/roleContext";
 import { escapeFormData } from "@/utils/function";
 import { DepositRequestFormValues, depositRequestSchema } from "@/utils/schema";
 import { createClientSide } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { merchant_table } from "@prisma/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -44,6 +46,8 @@ const DashboardDepositModalDeposit = () => {
   const supabaseClient = createClientSide();
   const [topUpOptions, setTopUpOptions] = useState<merchant_table[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const { teamMemberProfile } = useRole();
+  const queryClient = useQueryClient();
 
   const { canUserDeposit, setCanUserDeposit } = useUserHaveAlreadyWithdraw();
 
@@ -120,6 +124,13 @@ const DashboardDepositModalDeposit = () => {
         description: "Please wait for your request to be approved.",
       });
 
+      queryClient.invalidateQueries({
+        queryKey: [
+          "transaction-history",
+          "DEPOSIT",
+          teamMemberProfile?.company_member_id,
+        ],
+      });
       reset();
       setIsOpen(false);
       setCanUserDeposit(true);

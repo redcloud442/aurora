@@ -12,6 +12,9 @@ const handleFetchPackages = async () => {
       "Content-Type": "application/json",
       cookie: (await cookies()).toString(),
     },
+    next: {
+      revalidate: 60,
+    },
   });
   if (!res.ok) {
     throw new Error("Failed to fetch packages");
@@ -27,6 +30,9 @@ const handleFetchBanners = async () => {
     headers: {
       "Content-Type": "application/json",
       cookie: (await cookies()).toString(),
+    },
+    next: {
+      revalidate: 60,
     },
   });
   if (!res.ok) {

@@ -74,8 +74,12 @@ const CircularProgressWrapper = ({
           {formatNumberLocale(data.current_amount)}
         </div>
         <div className="text-xs mt-2">
-          <div>START: {formateMonthDateYear(data.package_date_created)}</div>
-          <div>MATURITY: {formateMonthDateYear(data.completion_date)}</div>
+          <div className="text-xs font-semibold">
+            START: {formateMonthDateYear(data.package_date_created)}
+          </div>
+          <div className="text-xs font-semibold">
+            MATURITY: {formateMonthDateYear(data.completion_date)}
+          </div>
         </div>
         {data.is_ready_to_claim && (
           <Dialog

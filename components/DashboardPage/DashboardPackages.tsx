@@ -153,17 +153,19 @@ const DashboardPackages = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row">
-      {liveData.map((data) => (
-        <CircularProgressWrapper
-          openDialogId={openDialogId}
-          setOpenDialogId={setOpenDialogId}
-          key={data.package_connection_id}
-          data={data}
-          handleClaimPackage={handleClaimPackage}
-          isLoading={isLoading}
-        />
-      ))}
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-3 place-items-center justify-center items-center w-full gap-4">
+        {liveData.map((data) => (
+          <CircularProgressWrapper
+            openDialogId={openDialogId}
+            setOpenDialogId={setOpenDialogId}
+            key={data.package_connection_id}
+            data={data}
+            handleClaimPackage={handleClaimPackage}
+            isLoading={isLoading}
+          />
+        ))}
+      </div>
     </div>
   );
 };

@@ -31,6 +31,7 @@ import { useRole } from "@/utils/context/roleContext";
 import { escapeFormData, formatNumberLocale } from "@/utils/function";
 import { withdrawalFormSchema, WithdrawalFormValues } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -41,6 +42,7 @@ const DashboardWithdrawalModal = () => {
   const [open, setOpen] = useState(false);
   const { earnings, setEarnings } = useUserEarningsStore();
   const { teamMemberProfile } = useRole();
+  const queryClient = useQueryClient();
 
   const { isWithdrawalToday, setIsWithdrawalToday } =
     useUserHaveAlreadyWithdraw();
@@ -163,6 +165,14 @@ const DashboardWithdrawalModal = () => {
       toast({
         title: "Withdrawal Request Successfully",
         description: "Please wait for it to be approved",
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "transaction-history",
+          "WITHDRAWAL",
+          teamMemberProfile?.company_member_id,
+        ],
       });
 
       reset();

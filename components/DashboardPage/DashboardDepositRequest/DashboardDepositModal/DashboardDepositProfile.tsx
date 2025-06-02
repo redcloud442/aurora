@@ -104,7 +104,7 @@ const DashboardDepositProfile = () => {
         throw new Error(`File upload failed: ${uploadError.message}`);
       }
 
-      const publicUrl = `https://${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/USER_PROFILE/${filePath}`;
+      const publicUrl = `https://cdn.auroraphil.com/storage/v1/object/public/USER_PROFILE/${filePath}`;
 
       await updateUserProfile({
         userId: profile.user_id,

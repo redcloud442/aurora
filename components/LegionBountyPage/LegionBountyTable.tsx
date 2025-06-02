@@ -3,8 +3,7 @@
 import { getLegionBounty } from "@/services/Bounty/Member";
 import { useIndirectReferralStore } from "@/store/useIndirrectReferralStore";
 import { useRole } from "@/utils/context/roleContext";
-import { escapeFormData } from "@/utils/function";
-import { LegionRequestData } from "@/utils/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   ColumnFiltersState,
   getCoreRowModel,
@@ -14,83 +13,73 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useMemo, useState } from "react";
 import CardTable from "../CardListTable/CardListTable";
 import { LegionBountyColumn } from "./LegionBountyColumn";
 
-type FilterFormValues = {
-  emailFilter: string;
+type LegionBountyTableProps = {
+  modalOpen: boolean;
 };
 
-const LegionBountyTable = () => {
+const LegionBountyTable = ({ modalOpen }: LegionBountyTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [activePage, setActivePage] = useState(1);
-  const [isFetchingList, setIsFetchingList] = useState(false);
 
   const { teamMemberProfile } = useRole();
-
   const { indirectReferral, setIndirectReferral } = useIndirectReferralStore();
 
   const columnAccessor = sorting?.[0]?.id || "user_date_created";
   const isAscendingSort =
     sorting?.[0]?.desc === undefined ? true : !sorting[0].desc;
 
-  const cacheLegionBounty = useRef<{
-    [key: string]: {
-      data: LegionRequestData[];
-      count: number;
-    };
-  }>({});
+  const { data, fetchNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["legion-bounty", teamMemberProfile?.company_member_id],
+      queryFn: async ({ pageParam = 1 }) => {
+        const { data, totalCount } = await getLegionBounty({
+          teamMemberId: teamMemberProfile?.company_member_id || "",
+          page: pageParam,
+          limit: 10,
+          columnAccessor,
+          isAscendingSort,
+          search: "",
+        });
 
-  const fetchAdminRequest = async () => {
-    try {
-      if (!teamMemberProfile) return;
+        return {
+          page: pageParam,
+          data: data || [],
+          totalCount: totalCount || 0,
+        };
+      },
+      getNextPageParam: (lastPage) => {
+        const hasMore = lastPage.data.length >= 10;
+        return hasMore ? lastPage.page + 1 : undefined;
+      },
+      enabled: !!teamMemberProfile || modalOpen,
+      staleTime: 1000 * 60 * 5, // Cache is fresh for 5 mins
+      gcTime: 1000 * 60 * 10, // Cache is stale for 10 mins
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      initialPageParam: 1,
+    });
 
-      const cacheKey = `legion-bounty-${activePage}`;
+  // Flatten and set to store
+  const flattenedData = useMemo(() => {
+    const allData = data?.pages.flatMap((page) => page.data) ?? [];
+    const totalCount = data?.pages?.[0]?.totalCount ?? 0;
 
-      if (cacheLegionBounty.current[cacheKey]) {
-        setIndirectReferral(cacheLegionBounty.current[cacheKey]);
-        return;
-      }
+    setIndirectReferral({ data: allData, count: totalCount });
 
-      setIsFetchingList(true);
-
-      const sanitizedData = escapeFormData(getValues());
-
-      const { emailFilter } = sanitizedData;
-
-      const { data, totalCount } = await getLegionBounty({
-        teamMemberId: teamMemberProfile.company_member_id,
-        page: activePage,
-        limit: 10,
-        columnAccessor: columnAccessor,
-        isAscendingSort: isAscendingSort,
-        search: emailFilter,
-      });
-
-      setIndirectReferral({
-        data: data || [],
-        count: totalCount || 0,
-      });
-
-      cacheLegionBounty.current[cacheKey] = {
-        data: data || [],
-        count: totalCount || 0,
-      };
-    } catch (e) {
-    } finally {
-      setIsFetchingList(false);
-    }
-  };
+    return allData;
+  }, [data]);
 
   const columns = LegionBountyColumn();
 
   const table = useReactTable({
-    data: indirectReferral.data || [],
+    data: flattenedData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -107,26 +96,22 @@ const LegionBountyTable = () => {
     },
   });
 
-  const { getValues } = useForm<FilterFormValues>({
-    defaultValues: {
-      emailFilter: "",
-    },
-  });
-
-  useEffect(() => {
-    fetchAdminRequest();
-  }, [activePage, sorting, teamMemberProfile]);
-
-  const pageCount = Math.ceil(indirectReferral.count / 10);
+  const handleNextPage = () => {
+    fetchNextPage();
+  };
 
   return (
     <CardTable
       table={table}
-      activePage={activePage}
-      totalCount={indirectReferral.count}
-      isFetchingList={isFetchingList}
-      setActivePage={setActivePage}
-      pageCount={pageCount}
+      totalCount={data?.pages?.[0]?.totalCount ?? 0}
+      isFetchingList={isLoading || isFetchingNextPage}
+      setActivePage={handleNextPage}
+      pageCount={
+        data?.pages?.[0]?.totalCount
+          ? Math.ceil(data.pages[0].totalCount / 10)
+          : 0
+      }
+      activePage={data?.pages?.[0]?.page ?? 0}
     />
   );
 };

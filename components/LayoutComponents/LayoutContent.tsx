@@ -14,6 +14,7 @@ import { useUserEarningsStore } from "@/store/useUserEarningsStore";
 import { useUserHaveAlreadyWithdraw } from "@/store/useWithdrawalToday";
 import { ROLE } from "@/utils/constant";
 import { useRole } from "@/utils/context/roleContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,7 +31,6 @@ import {
 import { Separator } from "../ui/separator";
 import { AppSidebar } from "../ui/side-bar";
 import { ModeToggle } from "../ui/toggleDarkmode";
-
 type LayoutContentProps = {
   children: React.ReactNode;
 };
@@ -44,6 +44,8 @@ export default function LayoutContent({ children }: LayoutContentProps) {
   const { setChartData } = usePackageChartData();
   const { setIsWithdrawalToday, setCanUserDeposit } =
     useUserHaveAlreadyWithdraw();
+
+  const queryClient = new QueryClient();
 
   const isAdmin = useMemo(
     () => teamMemberProfile.company_member_role === ROLE.ADMIN,
@@ -110,23 +112,25 @@ export default function LayoutContent({ children }: LayoutContentProps) {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen h-full w-full overflow-hidden relative">
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="/assets/bg/BACKGROUND.webp"
-            alt="Aurora Background"
-            width={1980}
-            height={1080}
-            className="absolute top-0 left-0 w-full h-full object-cover z-0"
-            priority
-          />
+      <QueryClientProvider client={queryClient}>
+        <div className="min-h-screen h-full w-full overflow-hidden relative">
+          <div className="absolute inset-0 -z-10">
+            <Image
+              src="/assets/bg/BACKGROUND.webp"
+              alt="Aurora Background"
+              width={1980}
+              height={1080}
+              className="absolute top-0 left-0 w-full h-full object-cover z-0"
+              priority
+            />
 
-          <div className="absolute inset-0 bg-black opacity-40" />
+            <div className="absolute inset-0 bg-black opacity-40" />
+          </div>
+          <div className="relative">{children}</div>
+          {/* {mobileNav} */}
+          {/* <DevMode /> */}
         </div>
-        <div className="relative">{children}</div>
-        {/* {mobileNav} */}
-        {/* <DevMode /> */}
-      </div>
+      </QueryClientProvider>
     );
   } else {
     return (

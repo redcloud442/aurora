@@ -1,10 +1,10 @@
 "use client";
 
-import { useToast } from "@/hooks/use-toast";
 import { getTransactionHistory } from "@/services/Transaction/Transaction";
 import { useUserTransactionHistoryStore } from "@/store/useTransactionStore";
 import { useRole } from "@/utils/context/roleContext";
 import { company_transaction_table } from "@prisma/client";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,84 +14,80 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import CardTable from "../CardListTable/CardListTable";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { TransactionHistoryColumn } from "./TransactionHistoryColumn";
 
-const TransactionHistoryTable = () => {
+type TransactionHistoryTableProps = {
+  modalOpen: boolean;
+};
+
+const TransactionHistoryTable = ({
+  modalOpen,
+}: TransactionHistoryTableProps) => {
   const { teamMemberProfile } = useRole();
-  const { toast } = useToast();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [activePage, setActivePage] = useState(1);
-  const [isFetchingList, setIsFetchingList] = useState(false);
   const [tab, setTab] = useState<"EARNINGS" | "WITHDRAWAL" | "DEPOSIT">(
     "EARNINGS"
   );
 
-  const cachedLeaderboards = useRef<{
-    [key: string]: {
-      data: company_transaction_table[];
-      totalCount: number;
-    };
-  }>({});
+  const { setTransactionHistory } = useUserTransactionHistoryStore();
 
-  const { transactionHistory, setTransactionHistory } =
-    useUserTransactionHistoryStore();
+  const { data, fetchNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: [
+        "transaction-history",
+        tab,
+        teamMemberProfile?.company_member_id,
+      ],
+      queryFn: async ({ pageParam = 1 }) => {
+        const { transactionHistory: historyData, totalTransactions } =
+          await getTransactionHistory({
+            page: pageParam as number,
+            limit: 10,
+            status: tab,
+          });
 
-  const fetchRequest = async () => {
-    if (!teamMemberProfile?.company_member_id) return;
+        return {
+          page: pageParam,
+          data: historyData,
+          totalCount: totalTransactions,
+        };
+      },
+      getNextPageParam: (lastPage) => {
+        const hasMore = lastPage.data.length >= 10;
+        return hasMore ? lastPage.page + 1 : undefined;
+      },
+      enabled: !!teamMemberProfile?.company_member_id && modalOpen,
+      staleTime: 1000 * 60 * 5, // Cache is fresh for 5 mins
+      gcTime: 1000 * 60 * 10, // Cache is stale for 10 mins
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      initialPageParam: 1,
+    });
 
-    const cacheKey = `${tab}-${activePage}`;
-    if (cachedLeaderboards.current[cacheKey]) {
-      const cachedData = cachedLeaderboards.current[cacheKey];
-      setTransactionHistory({
-        data: cachedData.data,
-        count: cachedData.totalCount,
-      });
-      return;
-    }
+  const flattenedData = useMemo(() => {
+    const allData = data?.pages.flatMap((page) => page.data) ?? [];
+    const totalCount = data?.pages?.[0]?.totalCount ?? 0;
 
-    setIsFetchingList(true);
-    try {
-      const { transactionHistory: transactionHistoryData, totalTransactions } =
-        await getTransactionHistory({
-          page: activePage,
-          limit: 10,
-          status: tab,
-        });
+    setTransactionHistory({
+      data: allData,
+      count: totalCount,
+    });
 
-      cachedLeaderboards.current[cacheKey] = {
-        data: transactionHistoryData,
-        totalCount: totalTransactions,
-      };
-
-      setTransactionHistory({
-        data: transactionHistoryData,
-        count: totalTransactions,
-      });
-    } catch (e) {
-      toast({
-        title: "Failed to fetch transaction history",
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    } finally {
-      setIsFetchingList(false);
-    }
-  };
-  useEffect(() => {
-    fetchRequest();
-  }, [tab, activePage]);
+    return allData;
+  }, [data]);
 
   const columns = useMemo(() => TransactionHistoryColumn({ type: tab }), [tab]);
 
   const table = useReactTable({
-    data: transactionHistory.data ?? [],
-    columns: columns as unknown as ColumnDef<company_transaction_table>[],
+    data: flattenedData,
+    columns: columns as ColumnDef<company_transaction_table>[],
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -105,10 +101,12 @@ const TransactionHistoryTable = () => {
     },
   });
 
-  const pageCount = Math.ceil((transactionHistory.count ?? 0) / 10);
-
   const handleTabChange = (type?: string) => {
     setTab(type as "EARNINGS" | "WITHDRAWAL" | "DEPOSIT");
+  };
+
+  const handleNextPage = () => {
+    fetchNextPage();
   };
 
   return (
@@ -131,11 +129,15 @@ const TransactionHistoryTable = () => {
 
       <CardTable
         table={table}
-        activePage={activePage}
-        totalCount={transactionHistory.count ?? 0}
-        isFetchingList={isFetchingList}
-        setActivePage={setActivePage}
-        pageCount={pageCount}
+        activePage={data?.pages?.[0]?.page ?? 0}
+        totalCount={data?.pages?.[0]?.totalCount ?? 0}
+        isFetchingList={isLoading || isFetchingNextPage}
+        setActivePage={handleNextPage}
+        pageCount={
+          data?.pages?.[0]?.totalCount
+            ? Math.ceil(data.pages[0].totalCount / 10)
+            : 0
+        }
       />
     </Tabs>
   );

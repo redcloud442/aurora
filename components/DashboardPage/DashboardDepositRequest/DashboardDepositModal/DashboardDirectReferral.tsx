@@ -48,10 +48,10 @@ const DashboardDirectReferral = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="direct">
-            <AllyBountyTable />
+            <AllyBountyTable modalOpen={false} />
           </TabsContent>
           <TabsContent value="indirect">
-            <LegionBountyTable />
+            <LegionBountyTable modalOpen={false} />
           </TabsContent>
         </Tabs>
 

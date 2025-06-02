@@ -30,7 +30,7 @@ const DashboardNavigation = () => {
 
             {/* Right Block: Amount */}
             <span>
-              {formatNumberLocale(earnings?.company_combined_earnings ?? 0)}
+              ₱ {formatNumberLocale(earnings?.company_combined_earnings ?? 0)}
             </span>
           </div>
         </div>
