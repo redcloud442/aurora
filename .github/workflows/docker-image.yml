@@ -67,7 +67,7 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          echo "🚀 Updating image in deployment 'aurora-fe'..."
+          echo "🚀 Updating image in deployment 'aurora-fe'....."
           kubectl set image deployment/aurora-fe aurora-fe=ghcr.io/redcloud442/aurora:prod-${SHORT_SHA} -n aurora
 
           echo "⏳ Waiting for rollout to complete..."
