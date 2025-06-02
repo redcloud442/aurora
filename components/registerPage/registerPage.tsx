@@ -13,7 +13,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { Resolver, useController, useForm } from "react-hook-form";
-import { BoundTurnstileObject } from "react-turnstile";
+import Turnstile, { BoundTurnstileObject } from "react-turnstile";
 import {
   Form,
   FormControl,
@@ -114,18 +114,12 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
       });
     }
 
-    // if (!captchaToken) {
-    //   if (captcha.current) {
-    //     captcha.current.reset();
-    //     captcha.current.execute();
-    //   }
-
-    //   return toast({
-    //     title: "Please wait",
-    //     description: "Refreshing CAPTCHA, please try again.",
-    //     variant: "destructive",
-    //   });
-    // }
+    if (!captchaToken) {
+      if (captcha.current) {
+        captcha.current.reset();
+        captcha.current.execute();
+      }
+    }
 
     const sanitizedData = escapeFormData(data);
 
@@ -164,6 +158,9 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
 
       router.push("/dashboard");
     } catch (e) {
+      if (captcha.current) {
+        captcha.current.reset();
+      }
       setIsSuccess(false);
       if (e instanceof Error) {
         toast({
@@ -351,16 +348,16 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
               </FormItem>
             )}
           />
-          {/* 
-            <div className="w-full flex flex-1 justify-center">
-              <Turnstile
-                size="flexible"
-                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
-                onVerify={(token) => {
-                  setCaptchaToken(token);
-                }}
-              />
-            </div> */}
+
+          <div className="w-full flex flex-1 justify-center">
+            <Turnstile
+              size="flexible"
+              sitekey={process.env.NEXT_PUBLIC_TURSTILE_SITE_KEY || ""}
+              onVerify={(token: string) => {
+                setCaptchaToken(token);
+              }}
+            />
+          </div>
 
           <div className="w-full flex justify-center relative ">
             <Button

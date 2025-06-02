@@ -21,7 +21,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { BoundTurnstileObject } from "react-turnstile";
+import Turnstile, { BoundTurnstileObject } from "react-turnstile";
 import {
   Form,
   FormControl,
@@ -86,13 +86,12 @@ const AuroraAuth = () => {
 
   const handleSignIn = async (data: LoginFormValues) => {
     try {
-      // if (!captchaToken) {
-      //   return toast({
-      //     title: "Please wait",
-      //     description: "Captcha is required.",
-      //     variant: "destructive",
-      //   });
-      // }
+      if (!captchaToken) {
+        if (captcha.current) {
+          captcha.current.reset();
+        }
+        return;
+      }
       setIsLoading(true);
 
       const sanitizedData = escapeFormData(data);
@@ -136,6 +135,9 @@ const AuroraAuth = () => {
       setStep("verify");
       reset();
     } catch (e) {
+      if (captcha.current) {
+        captcha.current.reset();
+      }
       if (e instanceof Error) {
         toast({
           title: e.message,
@@ -236,13 +238,13 @@ const AuroraAuth = () => {
               )}
             />
 
-            {/* <Turnstile
+            <Turnstile
               size="flexible"
-              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
-              onVerify={(token) => {
+              sitekey={process.env.NEXT_PUBLIC_TURSTILE_SITE_KEY || ""}
+              onVerify={(token: string) => {
                 setCaptchaToken(token);
               }}
-            /> */}
+            />
             <div className="w-full flex justify-center">
               <Button
                 variant="card"
