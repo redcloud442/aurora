@@ -265,7 +265,7 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
                 </FormItem>
               )}
             />
-            {sumOfTotal && (
+            {sumOfTotal > 0 && (
               <Input
                 variant="non-card"
                 id="totalIncome"
