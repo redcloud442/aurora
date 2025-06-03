@@ -147,7 +147,7 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
 
       setTeamMemberProfile((prev) => ({
         ...prev,
-        company_member_is_active: false,
+        company_member_is_active: true,
       }));
 
       queryClient.invalidateQueries({
