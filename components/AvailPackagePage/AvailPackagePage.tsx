@@ -7,7 +7,7 @@ import { createPackageConnection } from "@/services/Package/Member";
 import { usePackageChartData } from "@/store/usePackageChartData";
 import { useUserEarningsStore } from "@/store/useUserEarningsStore";
 import { useRole } from "@/utils/context/roleContext";
-import { escapeFormData } from "@/utils/function";
+import { escapeFormData, formatNumberLocale } from "@/utils/function";
 import { PromoPackageSchema } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { package_table } from "@prisma/client";
@@ -41,6 +41,7 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
   const [maxAmount, setMaxAmount] = useState(
     earnings?.company_combined_earnings
   );
+  const [sumOfTotal, setSumOfTotal] = useState(0);
   const formattedMaxAmount = new Intl.NumberFormat("en-PH", {
     style: "currency",
     currency: "PHP",
@@ -66,9 +67,10 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
 
   const amount = watch("amount");
 
-  const computation = amount
-    ? (Number(amount) * (selectedPackage?.package_percentage ?? 0)) / 100
-    : 0;
+  const computation =
+    amount && selectedPackage
+      ? (Number(amount) * (selectedPackage?.package_percentage ?? 0)) / 100
+      : 0;
 
   const onSubmit = async (data: z.infer<typeof packageSchema>) => {
     try {
@@ -166,6 +168,16 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
     }
   };
 
+  const handleCompute = () => {
+    const computation = amount
+      ? (Number(amount) * (selectedPackage?.package_percentage ?? 0)) / 100
+      : 0;
+
+    const sumOfTotal = computation + Number(amount);
+
+    setSumOfTotal(sumOfTotal);
+  };
+
   return (
     <>
       <Image
@@ -193,6 +205,15 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
               placeholder="0"
               value={earnings?.company_combined_earnings || ""}
             />
+
+            <Button
+              variant="card"
+              className=" font-black text-2xl rounded-none p-5"
+              type="button"
+              onClick={handleCompute}
+            >
+              AUTO COMPUTE
+            </Button>
 
             <FormField
               control={control}
@@ -244,10 +265,7 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
                 </FormItem>
               )}
             />
-            {/* 
-            <Label className="font-bold text-center" htmlFor="totalIncome">
-              TOTAL INCOME AFTER {selectedPackage?.packages_days} DAYS
-            </Label>
+
             <Input
               variant="non-card"
               id="totalIncome"
@@ -256,7 +274,7 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
               className="text-center"
               placeholder="Total Income"
               value={formatNumberLocale(sumOfTotal) || ""}
-            /> */}
+            />
 
             <div className="flex items-center justify-center">
               <Button

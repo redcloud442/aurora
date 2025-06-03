@@ -64,7 +64,7 @@ const CircularProgressWrapper = ({
 
       <div className="text-white bg-[#1e1933] rounded-full w-[260px] h-[260px] flex flex-col items-center justify-center gap-2 text-center">
         <h2 className="text-sm font-bold text-cyan-400 tracking-wide">
-          {data.package}
+          {data.package} Package
         </h2>
         <div className="text-xs font-semibold">
           AMOUNT: {formatNumberLocale(data.amount)}

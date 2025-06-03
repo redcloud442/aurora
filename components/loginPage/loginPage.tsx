@@ -51,14 +51,9 @@ const LoginPage = () => {
       if (!captchaToken) {
         if (captcha.current) {
           captcha.current.reset();
-          captcha.current.execute();
         }
 
-        return toast({
-          title: "Please wait",
-          description: "Refreshing CAPTCHA, please try again.",
-          variant: "destructive",
-        });
+        return;
       }
 
       const sanitizedData = escapeFormData(data);
@@ -70,10 +65,6 @@ const LoginPage = () => {
         password,
         captchaToken: captchaToken || "",
       });
-
-      if (captcha.current) {
-        captcha.current.reset();
-      }
 
       toast({
         title: "Login Successfully",
@@ -87,6 +78,7 @@ const LoginPage = () => {
     } catch (e) {
       if (captcha.current) {
         captcha.current.reset();
+        setCaptchaToken(null);
       }
       if (e instanceof Error) {
         toast({

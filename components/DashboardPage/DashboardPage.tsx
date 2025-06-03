@@ -53,7 +53,7 @@ const DashboardPage = ({ packages, banners }: Props) => {
     <>
       <DashboardNavigation />
       <div className="w-full">
-        <div className="flex flex-col items-center justify-between min-h-screen p-4 relative">
+        <div className="flex flex-col items-center justify-between min-h-[80vh] sm:min-h-screen p-4 relative">
           {/* Aurora Background */}
           <Image
             src="/assets/icons/AURORA.webp"

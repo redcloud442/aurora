@@ -133,7 +133,11 @@ export const RegisterSchema = z
     password: z
       .string()
       .trim()
-      .min(6, "Password must be at least 6 characters"),
+      .min(6, "Password must be at least 6 characters")
+      .refine((val) => !val.includes(" "), {
+        message: "Password must not contain spaces",
+      }),
+
     confirmPassword: z
       .string()
       .trim()
@@ -208,7 +212,14 @@ export const RegisterSchemaType = z.object({
       .max(11, "Phone number must be at most 11 digits")
       .optional()
   ),
-  password: z.string().trim().min(6, "Password must be at least 6 characters"),
+  password: z
+    .string()
+    .trim()
+    .min(6, "Password must be at least 6 characters")
+    .refine((val) => !val.includes(" "), {
+      message: "Password must not contain spaces",
+    }),
+
   botField: z.string().optional(),
   referralLink: z.string().optional(),
   sponsor: z.string().optional(),
