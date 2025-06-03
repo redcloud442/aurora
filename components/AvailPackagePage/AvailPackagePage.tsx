@@ -265,16 +265,17 @@ const AvailPackagePage = ({ selectedPackage, onClose }: Props) => {
                 </FormItem>
               )}
             />
-
-            <Input
-              variant="non-card"
-              id="totalIncome"
-              readOnly
-              type="text"
-              className="text-center"
-              placeholder="Total Income"
-              value={formatNumberLocale(sumOfTotal) || ""}
-            />
+            {sumOfTotal && (
+              <Input
+                variant="non-card"
+                id="totalIncome"
+                readOnly
+                type="text"
+                className="text-center"
+                placeholder="Total Income"
+                value={formatNumberLocale(sumOfTotal) || ""}
+              />
+            )}
 
             <div className="flex items-center justify-center">
               <Button
