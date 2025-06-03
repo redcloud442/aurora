@@ -41,13 +41,16 @@ const DashboardPromobanner = ({ promoBanner }: Props) => {
         <CarouselContent>
           {promoBanner.length > 0 &&
             promoBanner.map((item, index) => (
-              <CarouselItem key={item.company_promo_id}>
+              <CarouselItem
+                className="flex justify-center items-center"
+                key={item.company_promo_id}
+              >
                 <Image
                   src={item.company_promo_image}
                   alt="guide"
-                  width={1400}
-                  height={1400}
-                  className="w-full h-full rounded-md"
+                  width={500}
+                  height={500}
+                  className="w-[500px] h-[500px] rounded-md"
                   priority={index === activeSlide}
                 />
               </CarouselItem>
