@@ -46,8 +46,8 @@ const DashboardPage = ({ packages, banners }: Props) => {
   };
 
   const totalReferral =
-    (totalEarnings?.directReferralCount ?? 0) +
-    (totalEarnings?.indirectReferralCount ?? 0);
+    (totalEarnings?.indirectReferralAmount ?? 0) +
+    (totalEarnings?.directReferralAmount ?? 0);
 
   return (
     <>
