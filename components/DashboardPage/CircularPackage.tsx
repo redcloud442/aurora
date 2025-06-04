@@ -73,7 +73,12 @@ const CircularProgressWrapper = ({
           PROFIT: {formatNumberLocale(data.profit_amount)}
         </div>
         <div className="text-xs font-semibold">TOTAL EARNINGS</div>
-        <div className="bg-cyan-400 px-4 py-1 rounded-full text-black font-extrabold text-2xl mt-1">
+        <div
+          style={{
+            backgroundColor: data.package_color,
+          }}
+          className="px-4 py-1 rounded-full text-black font-extrabold text-2xl mt-1"
+        >
           {formatNumberLocale(data.current_amount)}
         </div>
         <div className="text-xs mt-2">
