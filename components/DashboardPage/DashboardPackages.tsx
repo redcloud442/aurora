@@ -140,6 +140,7 @@ const DashboardPackages = () => {
           totalEarnings: totalEarnings!.totalEarnings + newEarnings,
         });
       }
+      
       setOpenDialogId(null);
     } catch (error) {
       toast({
