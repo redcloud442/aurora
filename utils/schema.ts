@@ -50,6 +50,15 @@ export const withdrawalFormSchema = z.object({
 
 export type WithdrawalFormValues = z.infer<typeof withdrawalFormSchema>;
 
+export const registerUserCodeSchema = z.object({
+  code: z.coerce
+    .string()
+    .min(6)
+    .max(10)
+    .regex(/^[A-Za-z0-9]$/, "Code must be exactly 6 letters or numbers")
+    .trim(),
+});
+
 // Zod Schema for Login Form
 export const LoginSchema = z.object({
   userName: z

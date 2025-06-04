@@ -1,5 +1,6 @@
 import RegisterPage from "@/components/registerPage/registerPage";
 import prisma from "@/utils/prisma";
+import { registerUserCodeSchema } from "@/utils/schema";
 import { redirect } from "next/navigation";
 
 export async function generateMetadata({
@@ -49,13 +50,23 @@ const Page = async ({
     redirect("/auth/login");
   }
 
+  const result = registerUserCodeSchema.safeParse({
+    code: AURORAREFER,
+  });
+
+  if (!result.success) {
+    redirect("/auth/login");
+  }
+
+  const { code } = result.data;
+
   const user = await prisma.user_table.findFirstOrThrow({
     where: {
       company_member_table: {
         some: {
           company_referral_link_table: {
             some: {
-              company_referral_code: AURORAREFER,
+              company_referral_code: code,
             },
           },
           AND: [
@@ -76,10 +87,7 @@ const Page = async ({
   }
 
   return (
-    <RegisterPage
-      referralLink={AURORAREFER}
-      userName={user?.user_username || ""}
-    />
+    <RegisterPage referralLink={code} userName={user?.user_username || ""} />
   );
 };
 
