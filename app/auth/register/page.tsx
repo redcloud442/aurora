@@ -50,10 +50,11 @@ const Page = async ({
     redirect("/auth/login");
   }
 
-  const result = registerUserCodeSchema.safeParse({
+  const result = await registerUserCodeSchema.safeParseAsync({
     code: AURORAREFER,
   });
 
+  console.log(result);
   if (!result.success) {
     redirect("/auth/login");
   }
