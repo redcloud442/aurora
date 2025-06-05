@@ -50,7 +50,7 @@ const DashboardPromobanner = ({ promoBanner }: Props) => {
                   alt="guide"
                   width={500}
                   height={500}
-                  className="w-full sm:w-[500px] h-[500px] rounded-md"
+                  className="w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-md"
                   priority={index === activeSlide}
                 />
               </CarouselItem>
