@@ -12,6 +12,7 @@ import { useRole } from "@/utils/context/roleContext";
 import { escapeFormData, userNameToEmail } from "@/utils/function";
 import { createClientSide } from "@/utils/supabase/client";
 import { UserRequestdata } from "@/utils/types";
+import { Role } from "@prisma/client";
 import {
   ColumnFiltersState,
   getCoreRowModel,
@@ -213,8 +214,12 @@ const AdminUsersTable = () => {
 
       setRequestData((prev) =>
         prev.map((item) =>
-          item.user_id === memberId
-            ? { ...item, user_role: role, alliance_member_is_active: true }
+          item.company_member_id === memberId
+            ? {
+                ...item,
+                company_member_role: role as Role,
+                company_member_is_active: true,
+              }
             : item
         )
       );
