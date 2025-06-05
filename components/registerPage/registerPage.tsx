@@ -352,7 +352,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
           <div className="w-full flex flex-1 justify-center">
             <Turnstile
               size="flexible"
-              sitekey={process.env.NEXT_PUBLIC_TURSTILE_SITE_KEY || ""}
+              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
               onVerify={(token: string) => {
                 setCaptchaToken(token);
               }}

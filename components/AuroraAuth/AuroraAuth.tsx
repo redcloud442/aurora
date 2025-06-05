@@ -240,7 +240,7 @@ const AuroraAuth = () => {
 
             <Turnstile
               size="flexible"
-              sitekey={process.env.NEXT_PUBLIC_TURSTILE_SITE_KEY || ""}
+              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
               onVerify={(token: string) => {
                 setCaptchaToken(token);
               }}
