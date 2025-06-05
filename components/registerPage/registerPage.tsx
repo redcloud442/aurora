@@ -180,7 +180,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 p-4 sm:p-8 max-w-lg mx-auto">
-      {/* Top Aurora Logo */}
+      {/* Top Aurora Logo here */}
       <div className="w-full ">
         <Image
           src="/assets/icons/AURORA.webp"
