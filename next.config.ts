@@ -27,21 +27,6 @@ const nextConfig = {
         source: "/(.*)",
         headers: [
           {
-            key: "Content-Security-Policy",
-            value: `
-              default-src 'self';
-              script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://challenges.cloudflare.com;
-              style-src 'self' 'unsafe-inline';
-              connect-src 'self' https://api.js.onloadref.me https://auroraphil.com https://challenges.cloudflare.com;
-              img-src 'self' data: https:;
-              font-src 'self' https:;
-              frame-src 'self' https://challenges.cloudflare.com;
-              object-src 'none';
-            `
-              .replace(/\s{2,}/g, " ")
-              .trim(),
-          },
-          {
             key: "X-Frame-Options",
             value: "SAMEORIGIN",
           },
