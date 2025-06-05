@@ -6,23 +6,19 @@ import { redirect } from "next/navigation";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: Promise<{ referralCode: string }>;
+  searchParams: Promise<{ AURORAREFER: string }>;
 }) {
-  const { referralCode } = await searchParams;
+  const { AURORAREFER } = await searchParams;
 
   return {
     title: "Aurora ito na and SIMULA",
-    description:
-      "Join Aurora now — your path to digital prosperity begins here!",
     openGraph: {
-      url: `https://www.aurora.io/auth/register?referralCode=${referralCode}`,
-      title: `Join Aurora Now! Invited by ${referralCode}`,
-      description:
-        "Unlock exclusive rewards and opportunities by joining Aurora today.",
-      siteName: "aurora.io",
+      url: `https://www.auroraphil.com/auth/register?AURORAREFER=${AURORAREFER}`,
+      title: `Aurora ito na and SIMULA`,
+      siteName: "https://www.auroraphil.com",
       images: [
         {
-          url: "https://www.aurora.io/assets/icons/logo.ico",
+          url: "https://www.auroraphil.com/assets/icons/logo.ico",
           width: 1200,
           height: 630,
           alt: "Aurora Registration Banner",
@@ -32,9 +28,9 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `Join Aurora Now! Invited by ${referralCode}`,
-      description: "Be part of the Aurora revolution — register today.",
-      images: ["https://www.aurora.io/assets/icons/logo.ico"], // Same or different from OG
+      title: `Aurora ito na and SIMULA`,
+
+      images: ["https://www.auroraphil.com/assets/icons/logo.ico"],
     },
   };
 }
@@ -54,7 +50,6 @@ const Page = async ({
     code: AURORAREFER,
   });
 
-  console.log(result);
   if (!result.success) {
     redirect("/auth/login");
   }

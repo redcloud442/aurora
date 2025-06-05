@@ -9,11 +9,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Aurora Simula",
     description: "Ito na ang Simula!",
-    url: "https://aurora.io",
+    url: "https://www.auroraphil.com",
     siteName: "Aurora Simula",
     images: [
       {
-        url: "https://aurora.io/assets/icons/logo.ico",
+        url: "https://www.auroraphil.com/assets/icons/logo.ico",
         width: 1200,
         height: 630,
         alt: "Aurora Simula Banner",

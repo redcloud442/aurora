@@ -34,7 +34,7 @@ jobs:
           docker build \
               --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
               --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} \
-              --build-arg NEXT_PUBLIC_TURSTILE_SITE_KEY=${{ secrets.NEXT_PUBLIC_TURSTILE_SITE_KEY }} \
+              --build-arg NEXT_PUBLIC_TURNSTILE_SITE_KEY=${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }} \
               --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
               -t ghcr.io/redcloud442/aurora:prod-${SHORT_SHA} .
 
@@ -67,8 +67,8 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          echo "🚀 Updating image in deployment 'aurora-fe'....."
-          kubectl set image deployment/aurora-fe aurora-fe=ghcr.io/redcloud442/aurora:prod-${SHORT_SHA} -n aurora
+          echo "🚀 Updating image in deployment 'aurora-fe'..."
+          kubectl set image deployment/aurora-fe container-aurora-fe=ghcr.io/redcloud442/aurora:prod-${SHORT_SHA} -n aurora
 
           echo "⏳ Waiting for rollout to complete..."
           kubectl rollout status deployment/aurora-fe -n aurora
