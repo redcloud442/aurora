@@ -1,8 +1,7 @@
 import { useToast } from "@/hooks/use-toast";
-import { logError } from "@/services/Error/ErrorLogs";
 import { handleUpdateBalance } from "@/services/merchant/Merchant";
+import { useRole } from "@/utils/context/roleContext";
 import { escapeFormData } from "@/utils/function";
-import { createClientSide } from "@/utils/supabase/client";
 import { UserRequestdata } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { merchant_balance_log, user_table } from "@prisma/client";
@@ -33,9 +32,9 @@ const schema = z.object({
 type Raw = z.input<typeof schema>; // → { balance: string }
 type Parsed = z.infer<typeof schema>; // → { balance: number }
 
-const MerchantBalance = ({ userProfile, profile }: Props) => {
+const MerchantBalance = ({ userProfile }: Props) => {
+  const { profile } = useRole();
   const { toast } = useToast();
-  const supabaseClient = createClientSide();
   const [isLoading, setIsLoading] = useState(false);
   const [merchantData, setMerchantData] =
     useState<UserRequestdata>(userProfile);
@@ -85,7 +84,7 @@ const MerchantBalance = ({ userProfile, profile }: Props) => {
               merchant_balance_log_id: uuidv4(),
               merchant_balance_log_date: new Date(),
               merchant_balance_log_amount: Number(sanitizedData.balance),
-              merchant_balance_log_user: userProfile.user_username || "",
+              merchant_balance_log_user: profile.user_username || "",
             },
             ...prev.data,
           ],
@@ -97,13 +96,6 @@ const MerchantBalance = ({ userProfile, profile }: Props) => {
       });
       reset();
     } catch (e) {
-      if (e instanceof Error) {
-        await logError(supabaseClient, {
-          errorMessage: e.message,
-          stackTrace: e.stack,
-          stackPath: "components/UserAdminProfile/MerchantBalance.tsx",
-        });
-      }
       toast({
         title: "Error",
         description:

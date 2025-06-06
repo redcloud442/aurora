@@ -38,6 +38,9 @@ const Page = async ({ params }: { params: Promise<{ userId: string }> }) => {
 
   const combinedData = {
     ...userProfile,
+    ...(teamMemberProfile.dashboard_earnings_summary?.[0] || {}),
+    ...(teamMemberProfile.company_earnings_table?.[0] || {}),
+    ...(teamMemberProfile.merchant_member_table?.[0] || {}),
     ...profile,
     ...teamMemberProfile,
   };
