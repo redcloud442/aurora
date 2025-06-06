@@ -67,7 +67,7 @@ const MerchantBalance = ({ userProfile, profile }: Props) => {
 
       await handleUpdateBalance({
         amount: Number(sanitizedData.balance),
-        memberId: userProfile.merchant_member_id,
+        memberId: userProfile.company_member_id,
         userName: profile.user_username || "",
       });
 
@@ -77,19 +77,21 @@ const MerchantBalance = ({ userProfile, profile }: Props) => {
           Number(sanitizedData.balance) + merchantData.merchant_member_balance,
       }));
 
-      setMerchantBalanceHistory((prev: { data: merchant_balance_log[]; count: number }) => ({
-        ...prev,
-        data: [
-          {
-            merchant_balance_log_id: uuidv4(),
-            merchant_balance_log_date: new Date(),
-            merchant_balance_log_amount: Number(sanitizedData.balance),
-            merchant_balance_log_user: userProfile.user_username || "",
-          },
-          ...prev.data,
-        ],
-        count: prev.count + 1,
-      }));
+      setMerchantBalanceHistory(
+        (prev: { data: merchant_balance_log[]; count: number }) => ({
+          ...prev,
+          data: [
+            {
+              merchant_balance_log_id: uuidv4(),
+              merchant_balance_log_date: new Date(),
+              merchant_balance_log_amount: Number(sanitizedData.balance),
+              merchant_balance_log_user: userProfile.user_username || "",
+            },
+            ...prev.data,
+          ],
+          count: prev.count + 1,
+        })
+      );
       toast({
         title: "Merchant Balance Updated Successfully",
       });
