@@ -253,6 +253,18 @@ const AdminDashboardPage = () => {
           />
         </div>
 
+        <CardAmountAdmin
+          title="Withdrawal For Tomorrow"
+          value={
+            <>
+              <PhilippinePeso />
+              {adminDashboard?.withdrawalForTomorrow}
+            </>
+          }
+          description=""
+          descriptionClassName="text-sm text-gray-500"
+        />
+
         <Card className="w-full md:min-w-md">
           <CardHeader>
             <CardTitle>Total Referral</CardTitle>

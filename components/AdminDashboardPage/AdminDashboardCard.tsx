@@ -98,9 +98,7 @@ const AdminDashboardCard = ({ adminDashboardDataByDate }: Props) => {
         value={
           <>
             <CreditCard />
-            {formatNumberLocale(
-              adminDashboardDataByDate?.totalApprovedWithdrawal ?? 0
-            )}
+            {adminDashboardDataByDate?.totalApprovedWithdrawal ?? 0}
           </>
         }
         description=""
@@ -111,9 +109,7 @@ const AdminDashboardCard = ({ adminDashboardDataByDate }: Props) => {
         value={
           <>
             <CreditCard />
-            {formatNumberLocale(
-              adminDashboardDataByDate?.totalApprovedReceipts ?? 0
-            )}
+            {adminDashboardDataByDate?.totalApprovedReceipts ?? 0}
           </>
         }
         description=""

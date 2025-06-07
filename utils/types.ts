@@ -114,6 +114,7 @@ export type AdminDashboardData = {
   totalSpinPurchase: number;
   totalSpinPurchaseCount: number;
   totalWinningWithdrawal: number;
+  withdrawalForTomorrow: number;
 };
 
 export type AdminTopUpRequestData = {
