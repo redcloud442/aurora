@@ -3,6 +3,7 @@ import { CompanyMemberRole } from "./enums";
 export const PUBLIC_ROUTES = [
   "/auth/login",
   "/auth/register",
+  "/auth/callback",
   "/api/v1/auth",
   "/api/v1/auth/auroraAuth",
   "/api/health",
