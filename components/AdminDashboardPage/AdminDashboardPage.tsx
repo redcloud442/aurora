@@ -258,7 +258,7 @@ const AdminDashboardPage = () => {
           value={
             <>
               <PhilippinePeso />
-              {adminDashboard?.withdrawalForTomorrow}
+              {adminDashboard?.totalWithdrawalForTomorrow}
             </>
           }
           description=""
