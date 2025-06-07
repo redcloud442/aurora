@@ -147,20 +147,25 @@ const LegionBountyTable = ({ modalOpen }: LegionBountyTableProps) => {
   };
 
   return (
-    <CardTable
-      table={table}
-      totalCount={totalCount}
-      isFetchingList={isLoading || isFetchingNextPage}
-      handleNextPage={handleNextPage}
-      handlePreviousPage={handlePreviousPage}
-      handlePageChange={handlePageChange}
-      pageCount={
-        data?.pages?.[0]?.totalCount
-          ? Math.ceil(data.pages[0].totalCount / 10)
-          : 0
-      }
-      activePage={currentPageIndex + 1}
-    />
+    <>
+      <h1 className="text-xl font-bold text-white">
+        Total Indirect: {totalCount}
+      </h1>
+      <CardTable
+        table={table}
+        totalCount={totalCount}
+        isFetchingList={isLoading || isFetchingNextPage}
+        handleNextPage={handleNextPage}
+        handlePreviousPage={handlePreviousPage}
+        handlePageChange={handlePageChange}
+        pageCount={
+          data?.pages?.[0]?.totalCount
+            ? Math.ceil(data.pages[0].totalCount / 10)
+            : 0
+        }
+        activePage={currentPageIndex + 1}
+      />
+    </>
   );
 };
 
