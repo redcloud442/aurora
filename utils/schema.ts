@@ -53,9 +53,9 @@ export type WithdrawalFormValues = z.infer<typeof withdrawalFormSchema>;
 export const registerUserCodeSchema = z.object({
   code: z.coerce
     .string()
-    .min(6)
-    .max(6)
-    .regex(/^[A-Za-z0-9]{6}$/, "Code must be exactly 6 letters or numbers")
+    .min(6, "Code must be at least 6 characters")
+    .max(10, "Code must be at most 10 characters")
+    .regex(/^[A-Za-z0-9]{6,10}$/, "Code must be between 6 and 10 characters")
     .trim(),
 });
 
