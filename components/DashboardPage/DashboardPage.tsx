@@ -114,6 +114,7 @@ const DashboardPage = ({ packages, banners }: Props) => {
                 <div className="w-full relative">
                   <input
                     type="text"
+                    name="totalProfit"
                     className="w-full bg-gray-900/80 border-2 border-cyan-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-cyan-400/30 focus:outline-none focus:shadow-cyan-400/50 transition-all duration-300"
                     value={`₱ ${formatNumberLocale(totalEarnings?.totalEarnings ?? 0)}`}
                     readOnly
@@ -130,6 +131,7 @@ const DashboardPage = ({ packages, banners }: Props) => {
                 <div className="w-full relative">
                   <input
                     type="text"
+                    name="totalWithdrawal"
                     className="w-full bg-gray-900/80 border-2 border-green-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-green-400/30 focus:outline-none focus:shadow-green-400/50 transition-all duration-300"
                     value={`₱ ${formatNumberLocale(totalEarnings?.withdrawalAmount ?? 0)}`}
                     readOnly
@@ -146,6 +148,7 @@ const DashboardPage = ({ packages, banners }: Props) => {
                 <div className="w-full relative">
                   <input
                     type="text"
+                    name="totalReferral"
                     className="w-full bg-gray-900/80 border-2 border-cyan-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-cyan-400/30 focus:outline-none focus:shadow-cyan-400/50 transition-all duration-300"
                     value={`₱ ${formatNumberLocale(totalReferral)}`}
                     readOnly
@@ -162,6 +165,7 @@ const DashboardPage = ({ packages, banners }: Props) => {
                 <div className="w-full relative">
                   <input
                     type="text"
+                    name="totalPackage"
                     className="w-full bg-gray-900/80 border-2 border-purple-400 rounded-full h-14 px-6 text-white font-semibold text-lg shadow-lg shadow-purple-400/30 focus:outline-none focus:shadow-purple-400/50 transition-all duration-300"
                     value={`₱ ${formatNumberLocale(totalEarnings?.packageEarnings ?? 0)}`}
                     readOnly
