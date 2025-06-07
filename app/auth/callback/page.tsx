@@ -31,7 +31,7 @@ const AuthCallback = () => {
 
       setStatus("success");
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/console");
       }, 2000);
     };
 
