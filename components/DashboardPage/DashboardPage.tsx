@@ -7,6 +7,7 @@ import { useRole } from "@/utils/context/roleContext";
 import { formatNumberLocale } from "@/utils/function";
 import { company_promo_table, package_table } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import DashboardPromobanner from "./DashboardComponents/DashboardPromobanner";
 import DashboardDepositModalDeposit from "./DashboardDepositRequest/DashboardDepositModal/DashboardDepositModalDeposit";
@@ -84,10 +85,14 @@ const DashboardPage = ({ packages, banners }: Props) => {
           <div className="space-y-4 z-50 w-full">
             <div className="w-full flex justify-between sm:justify-baseline space-x-2 sm:space-x-4 relative">
               <DashboardWithdrawalModal />
-
-              <Button className="rounded-xl w-auto sm:w-full sm:h-12">
-                COMMUNITY
-              </Button>
+              <Link
+                href="https://www.facebook.com/groups/auroraphcommunity"
+                target="_blank"
+              >
+                <Button className="rounded-xl w-auto sm:w-full sm:h-12">
+                  COMMUNITY
+                </Button>
+              </Link>
             </div>
             <TransactionHistory />
           </div>
