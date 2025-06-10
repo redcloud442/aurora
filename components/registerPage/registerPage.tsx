@@ -356,6 +356,10 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
               onVerify={(token: string) => {
                 setCaptchaToken(token);
               }}
+              onExpire={() => {
+                setCaptchaToken(null);
+                captcha.current?.reset();
+              }}
             />
           </div>
 

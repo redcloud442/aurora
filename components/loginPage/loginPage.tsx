@@ -157,6 +157,10 @@ const LoginPage = () => {
               onVerify={(token: string) => {
                 setCaptchaToken(token);
               }}
+              onExpire={() => {
+                setCaptchaToken(null);
+                captcha.current?.reset();
+              }}
             />
           </div>
 
