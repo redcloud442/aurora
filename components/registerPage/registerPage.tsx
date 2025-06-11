@@ -114,12 +114,12 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
       });
     }
 
-    if (!captchaToken) {
-      if (captcha.current) {
-        captcha.current.reset();
-        captcha.current.execute();
-      }
-    }
+    // if (!captchaToken) {
+    //   if (captcha.current) {
+    //     captcha.current.reset();
+    //     captcha.current.execute();
+    //   }
+    // }
 
     const sanitizedData = escapeFormData(data);
 

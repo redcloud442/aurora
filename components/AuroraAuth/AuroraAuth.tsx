@@ -86,12 +86,12 @@ const AuroraAuth = () => {
 
   const handleSignIn = async (data: LoginFormValues) => {
     try {
-      if (!captchaToken) {
-        if (captcha.current) {
-          captcha.current.reset();
-        }
-        return;
-      }
+      // if (!captchaToken) {
+      //   if (captcha.current) {
+      //     captcha.current.reset();
+      //   }
+      //   return;
+      // }
       setIsLoading(true);
 
       const sanitizedData = escapeFormData(data);

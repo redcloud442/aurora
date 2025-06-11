@@ -305,11 +305,12 @@ const DashboardDepositModalDeposit = () => {
                 </Button>
               </div>
 
-              {selectedMerchant?.merchant_qr_attachment && (
-                <QRCodeViewer
-                  qrImageSrc={selectedMerchant.merchant_qr_attachment}
-                />
-              )}
+              {selectedMerchant?.merchant_qr_attachment &&
+                setSelectedMerchant !== null && (
+                  <QRCodeViewer
+                    qrImageSrc={selectedMerchant.merchant_qr_attachment}
+                  />
+                )}
 
               <FormField
                 control={control}

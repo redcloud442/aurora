@@ -48,13 +48,13 @@ const LoginPage = () => {
 
   const handleSignIn = async (data: LoginFormValues) => {
     try {
-      if (!captchaToken) {
-        if (captcha.current) {
-          captcha.current.reset();
-        }
+      // if (!captchaToken) {
+      //   if (captcha.current) {
+      //     captcha.current.reset();
+      //   }
 
-        return;
-      }
+      //   return;
+      // }
 
       const sanitizedData = escapeFormData(data);
 
